@@ -1,4 +1,5 @@
 import type { Route } from "./+types/home";
+import { ChatLayout } from "~/components/layout/ChatLayout";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,9 +9,5 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return (
-    <main className="flex items-center justify-center min-h-screen">
-      <h1 className="text-2xl font-bold">AI Code Lab</h1>
-    </main>
-  );
+  return <ChatLayout />;
 }
