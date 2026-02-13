@@ -1,10 +1,15 @@
 export function WelcomeArea() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-4">
-      <h1 className="text-4xl font-semibold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-3">
-        Hello, User
-      </h1>
-      <p className="text-lg text-gray-400">How can I help you today?</p>
+      <div className="max-w-2xl w-full">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-2xl">✨</span>
+          <span className="text-2xl text-gray-500">嘉裕，你好</span>
+        </div>
+        <h1 className="text-4xl font-semibold text-gray-800">
+          需要我为你做些什么？
+        </h1>
+      </div>
     </div>
   );
 }

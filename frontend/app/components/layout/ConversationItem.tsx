@@ -15,8 +15,8 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
       onClick={() => setActiveConversation(conversation.id)}
       className={`w-full text-left px-3 py-2.5 rounded-lg text-sm truncate transition-colors ${
         isActive
-          ? "bg-sidebar-hover text-sidebar-text"
-          : "text-sidebar-text hover:bg-sidebar-hover/60"
+          ? "bg-sidebar-active text-sidebar-text font-medium"
+          : "text-sidebar-text hover:bg-sidebar-hover"
       }`}
     >
       {conversation.title}

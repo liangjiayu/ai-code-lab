@@ -9,10 +9,10 @@ export function Sidebar() {
   return (
     <aside
       className={`flex flex-col bg-sidebar-bg transition-all duration-300 ${
-        isSidebarOpen ? "w-64" : "w-0"
+        isSidebarOpen ? "w-72" : "w-0"
       } overflow-hidden`}
     >
-      <div className="flex flex-col h-full w-64">
+      <div className="flex flex-col h-full w-72">
         <SidebarHeader />
         <ConversationList />
         <SidebarFooter />
