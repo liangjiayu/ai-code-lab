@@ -1,0 +1,60 @@
+[project]
+name = "fastapi-template"
+version = "0.1.0"
+description = "A modern FastAPI project template with async SQLAlchemy"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi[standard]>=0.128.4",
+    "sqlalchemy>=2.0.46",
+    "aiosqlite>=0.22.1",
+    "asyncpg>=0.31.0",
+    "pydantic-settings>=2.9.1",
+    "loguru>=0.7.3",
+    "alembic>=1.15.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.25.0",
+    "httpx>=0.28.0",
+    "ruff>=0.8.0",
+    "pre-commit>=4.0.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+# Ruff 配置：代码格式化和 linting
+[tool.ruff]
+line-length = 120
+target-version = "py314"
+exclude = [
+    ".venv",
+    ".git",
+    "__pycache__",
+    "alembic/versions",
+]
+
+[tool.ruff.lint]
+# 核心规则（简洁但完整）：
+# E: pycodestyle 错误 - 基础代码风格问题
+# F: pyflakes - 未使用的导入、未定义的变量等逻辑错误
+# I: isort - 导入排序，保持一致性
+select = ["E", "F", "I"]
+
+# 忽略的规则
+ignore = [
+    "E501",  # 行长度由 formatter 处理
+    "E741",  # 允许单字母变量名（i, x 等）
+]
+
+# 特定文件的例外规则
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]  # 允许 __init__.py 中的未使用导入（常用于导出）
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "tab"
+line-ending = "auto"

@@ -1,0 +1,31 @@
+# Pre-commit 配置 - 极简版本，只保留核心检查
+# 理念：格式化交给工具，只检查真正的代码错误
+#
+# 安装: uv run pre-commit install
+# 手动运行: uv run pre-commit run --all-files
+# 跳过检查: git commit --no-verify
+
+repos:
+  # Ruff - 唯一需要的检查工具
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.0
+    hooks:
+      # 1. 代码格式化（自动修复：缩进、引号、空格、导入排序等）
+      - id: ruff-format
+        name: "🎨 Format Code"
+
+      # 2. 代码检查（只检查 F 类错误：未定义变量、未使用导入等）
+      - id: ruff
+        name: "🔍 Check Errors"
+        args: [--fix, --exit-non-zero-on-fix]
+
+# 排除文件
+exclude: |
+  (?x)^(
+    \.venv/|
+    \.git/|
+    __pycache__/|
+    alembic/versions/.*\.py|
+    \.pytest_cache/|
+    \.ruff_cache/
+  )$
