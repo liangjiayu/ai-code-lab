@@ -34,7 +34,48 @@ export function useSendMessage() {
         content: params.content,
       });
     },
-    onSuccess: (_data, variables) => {
+    onMutate: async (variables) => {
+      // 取消正在进行的查询，避免覆盖乐观更新
+      await queryClient.cancelQueries({
+        queryKey: ["messages", variables.conversation_id],
+      });
+
+      const previousData = queryClient.getQueryData<API.PageDataMessageOut_>(["messages", variables.conversation_id]);
+
+      // 乐观添加用户消息，让用户输入立即显示
+      const optimisticMessage: API.MessageOut = {
+        id: `temp-${Date.now()}`,
+        conversation_id: variables.conversation_id,
+        role: "user" as API.MessageRole,
+        content: variables.content,
+        status: "success" as API.MessageStatus,
+        created_at: new Date().toISOString(),
+      };
+
+      queryClient.setQueryData<API.PageDataMessageOut_>(
+        ["messages", variables.conversation_id],
+        (old) => ({
+          ...old,
+          list: [...(old?.list ?? []), optimisticMessage],
+          total: (old?.total ?? 0) + 1,
+          page: old?.page ?? 1,
+          page_size: old?.page_size ?? 20,
+        })
+      );
+
+      return { previousData };
+    },
+    onError: (_error, variables, context) => {
+      // 出错时回滚到之前的数据
+      if (context?.previousData) {
+        queryClient.setQueryData(
+          ["messages", variables.conversation_id],
+          context.previousData
+        );
+      }
+    },
+    onSettled: (_data, _error, variables) => {
+      // 无论成功失败，都重新获取最新数据
       queryClient.invalidateQueries({
         queryKey: ["messages", variables.conversation_id],
       });
