@@ -20,7 +20,8 @@ export function ChatInput() {
 
   const createConversation = useCreateConversation();
   const sendMessage = useSendMessage();
-  const isSending = createConversation.isPending || sendMessage.isPending;
+  const isStreaming = useChatStore((s) => s.isStreaming);
+  const isSending = createConversation.isPending || sendMessage.isPending || isStreaming;
 
   const adjustHeight = useCallback(() => {
     const textarea = textareaRef.current;

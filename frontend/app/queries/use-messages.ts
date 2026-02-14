@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getMessages, createMessage } from "~/services/api/messages";
-import { chatCompletions } from "~/services/api/chat";
+import { fetchSSE } from "~/lib/sse-fetch";
+import { useChatStore } from "~/stores/chat-store";
 
 export function useMessages(conversationId: string) {
   return useQuery({
@@ -27,22 +28,36 @@ export function useSendMessage() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (params: { conversation_id: string; content: string }) => {
-      // chatCompletions 后端会同时保存用户消息和生成 AI 回复
-      return chatCompletions({
-        conversation_id: params.conversation_id,
-        content: params.content,
-      });
+    mutationFn: async (params: { conversation_id: string; content: string }) => {
+      const store = useChatStore.getState();
+      store.startStreaming();
+
+      await fetchSSE(
+        "/api/chat/completions",
+        {
+          conversation_id: params.conversation_id,
+          content: params.content,
+        },
+        {
+          onContent: (chunk) => {
+            useChatStore.getState().appendStreamingContent(chunk);
+          },
+          onError: (error) => {
+            throw new Error(error);
+          },
+          onComplete: () => {
+            useChatStore.getState().stopStreaming();
+          },
+        }
+      );
     },
     onMutate: async (variables) => {
-      // 取消正在进行的查询，避免覆盖乐观更新
       await queryClient.cancelQueries({
         queryKey: ["messages", variables.conversation_id],
       });
 
       const previousData = queryClient.getQueryData<API.PageDataMessageOut_>(["messages", variables.conversation_id]);
 
-      // 乐观添加用户消息，让用户输入立即显示
       const optimisticMessage: API.MessageOut = {
         id: `temp-${Date.now()}`,
         conversation_id: variables.conversation_id,
@@ -66,16 +81,16 @@ export function useSendMessage() {
       return { previousData };
     },
     onError: (_error, variables, context) => {
-      // 出错时回滚到之前的数据
       if (context?.previousData) {
         queryClient.setQueryData(
           ["messages", variables.conversation_id],
           context.previousData
         );
       }
+      useChatStore.getState().resetStreaming();
     },
-    onSettled: (_data, _error, variables) => {
-      // 无论成功失败，都重新获取最新数据
+    onSuccess: (_data, variables) => {
+      useChatStore.getState().resetStreaming();
       queryClient.invalidateQueries({
         queryKey: ["messages", variables.conversation_id],
       });
