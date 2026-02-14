@@ -27,29 +27,14 @@ export function useSendMessage() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (params: { conversation_id: string; content: string }) => {
-      // 1. 创建用户消息
-      await createMessage({
-        role: "user",
-        content: params.content,
-        conversation_id: params.conversation_id,
-      });
-
-      // 2. 刷新列表展示用户消息
-      await queryClient.invalidateQueries({
-        queryKey: ["messages", params.conversation_id],
-      });
-
-      // 3. 调用 AI 获取回复
-      const aiResponse = await chatCompletions({
+    mutationFn: (params: { conversation_id: string; content: string }) => {
+      // chatCompletions 后端会同时保存用户消息和生成 AI 回复
+      return chatCompletions({
         conversation_id: params.conversation_id,
         content: params.content,
       });
-
-      return aiResponse;
     },
     onSuccess: (_data, variables) => {
-      // 4. 刷新列表展示 AI 回复
       queryClient.invalidateQueries({
         queryKey: ["messages", variables.conversation_id],
       });
