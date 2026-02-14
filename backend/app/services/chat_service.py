@@ -1,15 +1,17 @@
+import json
+from collections.abc import AsyncGenerator
+
 import httpx
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
-from app.core.exceptions import BizException
 from app.repositories.message_repository import MessageRepository
 from app.schemas.chat import ChatRequest
-from app.schemas.message import MessageCreate, MessageRole, MessageStatus
+from app.schemas.message import MessageCreate, MessageRole, MessageStatus, MessageUpdate
 from app.services.conversation_service import get_conversation
 
 
-async def chat(db: AsyncSession, chat_in: ChatRequest):
+async def chat(db: AsyncSession, chat_in: ChatRequest) -> AsyncGenerator[str, None]:
 	# 1. 验证会话存在
 	await get_conversation(db, chat_in.conversation_id)
 
@@ -29,10 +31,22 @@ async def chat(db: AsyncSession, chat_in: ChatRequest):
 	messages = [{"role": msg.role, "content": msg.content} for msg in history]
 	messages.append({"role": "user", "content": chat_in.content})
 
-	# 5. 调用 DeepSeek API
+	# 5. 创建 AI 消息占位（processing 状态）
+	ai_message_in = MessageCreate(
+		conversation_id=chat_in.conversation_id,
+		role=MessageRole.assistant,
+		content="",
+		status=MessageStatus.processing,
+	)
+	ai_message = await MessageRepository.create(db, ai_message_in)
+
+	# 6. 流式调用 DeepSeek API
+	full_content = ""
+
 	try:
 		async with httpx.AsyncClient(timeout=120) as client:
-			response = await client.post(
+			async with client.stream(
+				"POST",
 				f"{settings.DEEPSEEK_BASE_URL}/chat/completions",
 				headers={
 					"Authorization": f"Bearer {settings.DEEPSEEK_API_KEY}",
@@ -41,24 +55,34 @@ async def chat(db: AsyncSession, chat_in: ChatRequest):
 				json={
 					"model": settings.DEEPSEEK_MODEL,
 					"messages": messages,
+					"stream": True,
 				},
-			)
-			response.raise_for_status()
-			result = response.json()
+			) as response:
+				response.raise_for_status()
+				async for line in response.aiter_lines():
+					if not line.startswith("data: "):
+						continue
+					data = line[6:]
+					if data == "[DONE]":
+						break
+					chunk = json.loads(data)
+					delta = chunk["choices"][0].get("delta", {})
+					content = delta.get("content", "")
+					if content:
+						full_content += content
+						yield f"data: {json.dumps({'content': content}, ensure_ascii=False)}\n\n"
 	except httpx.HTTPStatusError as e:
-		raise BizException(code=502, msg=f"DeepSeek API 请求失败: {e.response.status_code}")
+		error_msg = f"DeepSeek API 请求失败: {e.response.status_code}"
+		yield f"data: {json.dumps({'error': error_msg}, ensure_ascii=False)}\n\n"
+		await MessageRepository.update(db, ai_message, MessageUpdate(content=error_msg, status=MessageStatus.error))
+		return
 	except httpx.RequestError:
-		raise BizException(code=502, msg="DeepSeek API 连接失败")
+		error_msg = "DeepSeek API 连接失败"
+		yield f"data: {json.dumps({'error': error_msg}, ensure_ascii=False)}\n\n"
+		await MessageRepository.update(db, ai_message, MessageUpdate(content=error_msg, status=MessageStatus.error))
+		return
 
-	# 6. 解析响应并保存 AI 回复
-	ai_content = result["choices"][0]["message"]["content"]
-	ai_message_in = MessageCreate(
-		conversation_id=chat_in.conversation_id,
-		role=MessageRole.assistant,
-		content=ai_content,
-		status=MessageStatus.success,
-	)
-	ai_message = await MessageRepository.create(db, ai_message_in)
-
-	# 7. 返回 AI 回复
-	return ai_message
+	# 7. 流结束，更新 AI 消息内容和状态
+	await MessageRepository.update(db, ai_message, MessageUpdate(content=full_content, status=MessageStatus.success))
+	yield f"data: {json.dumps({'message_id': str(ai_message.id)}, ensure_ascii=False)}\n\n"
+	yield "data: [DONE]\n\n"
