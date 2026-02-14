@@ -3,7 +3,7 @@ import { useParams } from "react-router";
 import { RiAddLine, RiMore2Fill, RiArrowDownSLine, RiMicLine } from "@remixicon/react";
 import { useChatStore } from "~/stores/chat-store";
 import { useCreateConversation } from "~/queries/use-conversations";
-import { useCreateMessage } from "~/queries/use-messages";
+import { useSendMessage } from "~/queries/use-messages";
 
 const suggestions = [
   { icon: "🎨", label: "制作图片" },
@@ -19,8 +19,8 @@ export function ChatInput() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const createConversation = useCreateConversation();
-  const createMessage = useCreateMessage();
-  const isSending = createConversation.isPending || createMessage.isPending;
+  const sendMessage = useSendMessage();
+  const isSending = createConversation.isPending || sendMessage.isPending;
 
   const adjustHeight = useCallback(() => {
     const textarea = textareaRef.current;
@@ -52,8 +52,7 @@ export function ChatInput() {
     }
 
     if (id) {
-      createMessage.mutate({
-        role: "user",
+      sendMessage.mutate({
         content: text,
         conversation_id: id,
       });

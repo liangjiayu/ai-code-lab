@@ -62,6 +62,13 @@ declare namespace API {
     data?: UserOut | null;
   };
 
+  type ChatRequest = {
+    /** Conversation Id 所属会话 ID */
+    conversation_id: string;
+    /** Content 用户消息内容 */
+    content: string;
+  };
+
   type ConversationCreate = {
     /** Title 会话标题 */
     title?: string | null;

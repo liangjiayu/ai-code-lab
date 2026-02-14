@@ -1,10 +1,11 @@
 import { useParams } from "react-router";
-import { useMessages } from "~/queries/use-messages";
+import { useMessages, useSendMessage } from "~/queries/use-messages";
 import { ChatMessageList } from "~/components/layout/ChatMessageList";
 
 export default function Chat() {
   const { id } = useParams();
   const { data, isLoading } = useMessages(id!);
+  const sendMessage = useSendMessage();
   const messages = data?.list ?? [];
 
   if (isLoading) {
@@ -15,5 +16,5 @@ export default function Chat() {
     );
   }
 
-  return <ChatMessageList messages={messages} />;
+  return <ChatMessageList messages={messages} isAiLoading={sendMessage.isPending} />;
 }
