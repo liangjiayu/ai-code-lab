@@ -102,10 +102,10 @@ uv run alembic upgrade head
 ### 启动开发服务器
 
 ```bash
-fastapi dev app/main.py
+fastapi dev app/main.py --port 8100
 ```
 
-启动后访问 `http://127.0.0.1:8000/docs` 查看交互式 API 文档。
+启动后访问 `http://127.0.0.1:8100/docs` 查看交互式 API 文档。
 
 ## API 接口
 

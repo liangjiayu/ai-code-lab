@@ -39,7 +39,7 @@ app/
 
 ## Commands
 
-- **Run dev server:** `fastapi dev app/main.py`
+- **Run dev server:** `fastapi dev app/main.py --port 8100`
 - **Install deps:** `uv sync`
 - **Initialize database:** `uv run alembic upgrade head`
 - **Create migration:** `uv run alembic revision --autogenerate -m "description"`
