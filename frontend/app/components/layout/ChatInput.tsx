@@ -1,6 +1,9 @@
 import { useRef, useCallback } from "react";
+import { useParams } from "react-router";
 import { RiAddLine, RiMore2Fill, RiArrowDownSLine, RiMicLine } from "@remixicon/react";
 import { useChatStore } from "~/stores/chat-store";
+import { useCreateConversation } from "~/queries/use-conversations";
+import { useCreateMessage } from "~/queries/use-messages";
 
 const suggestions = [
   { icon: "🎨", label: "制作图片" },
@@ -10,9 +13,14 @@ const suggestions = [
 ];
 
 export function ChatInput() {
+  const { id } = useParams();
   const inputValue = useChatStore((s) => s.inputValue);
   const setInputValue = useChatStore((s) => s.setInputValue);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const createConversation = useCreateConversation();
+  const createMessage = useCreateMessage();
+  const isSending = createConversation.isPending || createMessage.isPending;
 
   const adjustHeight = useCallback(() => {
     const textarea = textareaRef.current;
@@ -35,10 +43,22 @@ export function ChatInput() {
   };
 
   const handleSend = () => {
-    if (!inputValue.trim()) return;
+    const text = inputValue.trim();
+    if (!text || isSending) return;
+
     setInputValue("");
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
+    }
+
+    if (id) {
+      createMessage.mutate({
+        role: "user",
+        content: text,
+        conversation_id: id,
+      });
+    } else {
+      createConversation.mutate(text);
     }
   };
 
@@ -53,7 +73,8 @@ export function ChatInput() {
             onKeyDown={handleKeyDown}
             placeholder="问问 Gemini 3"
             rows={1}
-            className="w-full resize-none bg-transparent px-5 pt-4 pb-2 text-base text-gray-800 placeholder-gray-400 outline-none max-h-36"
+            disabled={isSending}
+            className="w-full resize-none bg-transparent px-5 pt-4 pb-2 text-base text-gray-800 placeholder-gray-400 outline-none max-h-36 disabled:opacity-50"
           />
           <div className="flex items-center justify-between px-4 pb-3">
             <div className="flex items-center gap-1">

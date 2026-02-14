@@ -1,7 +1,5 @@
-import type { Message } from "~/types/chat";
-
 interface ChatMessageListProps {
-  messages: Message[];
+  messages: API.MessageOut[];
 }
 
 export function ChatMessageList({ messages }: ChatMessageListProps) {

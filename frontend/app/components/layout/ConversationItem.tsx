@@ -1,8 +1,7 @@
 import { NavLink } from "react-router";
-import type { Conversation } from "~/types/chat";
 
 interface ConversationItemProps {
-  conversation: Conversation;
+  conversation: API.ConversationOut;
 }
 
 export function ConversationItem({ conversation }: ConversationItemProps) {
