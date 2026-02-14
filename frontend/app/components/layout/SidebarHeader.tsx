@@ -1,12 +1,13 @@
 import { RiMenuLine, RiSearchLine, RiEditLine, RiHomeLine, RiArrowRightSLine } from "@remixicon/react";
+import { useNavigate } from "react-router";
 import { useChatStore } from "~/stores/chat-store";
 
 export function SidebarHeader() {
   const toggleSidebar = useChatStore((s) => s.toggleSidebar);
-  const setActiveConversation = useChatStore((s) => s.setActiveConversation);
+  const navigate = useNavigate();
 
   const handleNewChat = () => {
-    setActiveConversation(null);
+    navigate("/");
   };
 
   return (

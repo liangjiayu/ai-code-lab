@@ -1,4 +1,4 @@
-import type { Conversation, ConversationGroup } from "~/types/chat";
+import type { Conversation, ConversationGroup, Message } from "~/types/chat";
 
 function daysAgo(days: number): Date {
   const date = new Date();
@@ -69,6 +69,58 @@ export const mockConversations: Conversation[] = [
     updatedAt: daysAgo(20),
   },
 ];
+
+export const mockMessages: Message[] = [
+  {
+    id: "m1",
+    conversationId: "1",
+    role: "user",
+    content: "如何使用 React Router v7 搭建一个 SPA 应用？",
+    createdAt: daysAgo(0),
+  },
+  {
+    id: "m2",
+    conversationId: "1",
+    role: "assistant",
+    content:
+      "使用 React Router v7 搭建 SPA 非常简单。首先安装依赖：\n\n```bash\nnpm install react-router\n```\n\n然后在 `routes.ts` 中配置路由：\n\n```ts\nimport { type RouteConfig, index, route } from '@react-router/dev/routes';\n\nexport default [\n  index('routes/home.tsx'),\n  route('about', 'routes/about.tsx'),\n] satisfies RouteConfig;\n```\n\n React Router v7 支持文件路由和配置路由两种方式，推荐使用配置路由以获得更好的灵活性。",
+    createdAt: daysAgo(0),
+  },
+  {
+    id: "m3",
+    conversationId: "2",
+    role: "user",
+    content: "帮我写一个 Node.js 文件上传接口，使用 Express 和 multer。",
+    createdAt: daysAgo(0),
+  },
+  {
+    id: "m4",
+    conversationId: "2",
+    role: "assistant",
+    content:
+      "好的，以下是一个使用 Express + Multer 的文件上传接口：\n\n```js\nconst express = require('express');\nconst multer = require('multer');\n\nconst upload = multer({ dest: 'uploads/' });\nconst app = express();\n\napp.post('/upload', upload.single('file'), (req, res) => {\n  res.json({ message: '上传成功', file: req.file });\n});\n\napp.listen(3000);\n```\n\n这个接口接受单个文件上传，文件会保存在 `uploads/` 目录中。你也可以配置 `storage` 来自定义文件名和存储路径。",
+    createdAt: daysAgo(0),
+  },
+  {
+    id: "m5",
+    conversationId: "3",
+    role: "user",
+    content: "Tailwind CSS v4 有哪些新特性？",
+    createdAt: daysAgo(1),
+  },
+  {
+    id: "m6",
+    conversationId: "3",
+    role: "assistant",
+    content:
+      "Tailwind CSS v4 带来了很多重大改进：\n\n1. **全新引擎** — 使用 Rust 编写的 Oxide 引擎，构建速度提升 10 倍\n2. **CSS-first 配置** — 不再需要 `tailwind.config.js`，直接在 CSS 中使用 `@theme` 配置\n3. **自动内容检测** — 不再需要配置 `content` 路径\n4. **原生 CSS 嵌套** — 支持 CSS 嵌套语法\n5. **容器查询支持** — 内置 `@container` 支持\n\n整体来说，v4 更加简洁、快速，开发体验有了质的提升。",
+    createdAt: daysAgo(1),
+  },
+];
+
+export function getMessagesByConversationId(conversationId: string): Message[] {
+  return mockMessages.filter((m) => m.conversationId === conversationId);
+}
 
 function isToday(date: Date): boolean {
   const now = new Date();

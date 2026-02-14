@@ -7,8 +7,6 @@ interface ChatStore {
   toggleSidebar: () => void;
 
   conversations: Conversation[];
-  activeConversationId: string | null;
-  setActiveConversation: (id: string | null) => void;
   createConversation: () => void;
 
   inputValue: string;
@@ -20,8 +18,6 @@ export const useChatStore = create<ChatStore>((set) => ({
   toggleSidebar: () => set((s) => ({ isSidebarOpen: !s.isSidebarOpen })),
 
   conversations: mockConversations,
-  activeConversationId: null,
-  setActiveConversation: (id) => set({ activeConversationId: id }),
   createConversation: () =>
     set((s) => {
       const newConv: Conversation = {
@@ -32,7 +28,6 @@ export const useChatStore = create<ChatStore>((set) => ({
       };
       return {
         conversations: [newConv, ...s.conversations],
-        activeConversationId: newConv.id,
         inputValue: "",
       };
     }),

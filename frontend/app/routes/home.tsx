@@ -1,7 +1,6 @@
-import type { Route } from "./+types/home";
-import { ChatLayout } from "~/components/layout/ChatLayout";
+import { WelcomeArea } from "~/components/layout/WelcomeArea";
 
-export function meta({}: Route.MetaArgs) {
+export function meta() {
   return [
     { title: "AI Code Lab" },
     { name: "description", content: "AI Code Lab Frontend" },
@@ -9,5 +8,5 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <ChatLayout />;
+  return <WelcomeArea />;
 }
