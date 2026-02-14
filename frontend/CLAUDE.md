@@ -41,6 +41,7 @@ This is a React SPA (SSR disabled via `react-router.config.ts`) built with React
 ### Routing
 
 Routes defined in `app/routes.ts`:
+
 - `app-layout.tsx` — Shared layout (Sidebar + MainHeader + ChatInput + `<Outlet />`)
 - `/` → `home.tsx` — Welcome page
 - `/:id` → `chat.tsx` — Chat conversation detail
@@ -62,3 +63,9 @@ root.tsx (QueryClientProvider)
       ├─ / → home.tsx → WelcomeArea
       └─ /:id → chat.tsx → ChatMessageList
 ```
+
+## Git Commit
+
+- Commit 信息使用中文
+- 格式：`<type>: <简要描述>`，type 用英文（feat/fix/refactor/docs/chore）
+- 描述简洁，可以一句话概括，也可以用列表说明多项改动，小调整不需要详情
