@@ -56,7 +56,7 @@ export function useSendMessage() {
         queryKey: ["messages", variables.conversation_id],
       });
 
-      const previousData = queryClient.getQueryData<API.PageDataMessageOut_>(["messages", variables.conversation_id]);
+      const previousData = queryClient.getQueryData<API.MessageOut[]>(["messages", variables.conversation_id]);
 
       const optimisticMessage: API.MessageOut = {
         id: `temp-${Date.now()}`,
@@ -67,15 +67,9 @@ export function useSendMessage() {
         created_at: new Date().toISOString(),
       };
 
-      queryClient.setQueryData<API.PageDataMessageOut_>(
+      queryClient.setQueryData<API.MessageOut[]>(
         ["messages", variables.conversation_id],
-        (old) => ({
-          ...old,
-          list: [...(old?.list ?? []), optimisticMessage],
-          total: (old?.total ?? 0) + 1,
-          page: old?.page ?? 1,
-          page_size: old?.page_size ?? 20,
-        })
+        (old) => [...(old ?? []), optimisticMessage]
       );
 
       return { previousData };

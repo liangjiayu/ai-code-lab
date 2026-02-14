@@ -8,6 +8,15 @@ declare namespace API {
     data?: ConversationOut | null;
   };
 
+  type ApiResponseListMessageOut_ = {
+    /** Code 业务状态码 */
+    code?: number;
+    /** Msg 提示信息 */
+    msg?: string;
+    /** Data 响应数据 */
+    data?: MessageOut[] | null;
+  };
+
   type ApiResponseMessageOut_ = {
     /** Code 业务状态码 */
     code?: number;
@@ -33,15 +42,6 @@ declare namespace API {
     msg?: string;
     /** 响应数据 */
     data?: PageDataConversationOut_ | null;
-  };
-
-  type ApiResponsePageDataMessageOut_ = {
-    /** Code 业务状态码 */
-    code?: number;
-    /** Msg 提示信息 */
-    msg?: string;
-    /** 响应数据 */
-    data?: PageDataMessageOut_ | null;
   };
 
   type ApiResponsePageDataUserOut_ = {
@@ -134,8 +134,6 @@ declare namespace API {
 
   type getMessagesParams = {
     conversation_id: string;
-    page?: number;
-    page_size?: number;
   };
 
   type getUserParams = {
@@ -193,17 +191,6 @@ declare namespace API {
   type PageDataConversationOut_ = {
     /** List 数据列表 */
     list: ConversationOut[];
-    /** Total 总记录数 */
-    total: number;
-    /** Page 当前页码 */
-    page: number;
-    /** Page Size 每页条数 */
-    page_size: number;
-  };
-
-  type PageDataMessageOut_ = {
-    /** List 数据列表 */
-    list: MessageOut[];
     /** Total 总记录数 */
     total: number;
     /** Page 当前页码 */

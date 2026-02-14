@@ -71,17 +71,11 @@ export async function getMessages(
   options?: { [key: string]: any }
 ) {
   const { conversation_id: param0, ...queryParams } = params;
-  return request<API.PageDataMessageOut_ | null>(
+  return request<API.MessageOut[] | null>(
     `/api/messages/conversation/${param0}`,
     {
       method: "GET",
-      params: {
-        // page has a default value: 1
-        page: "1",
-        // page_size has a default value: 20
-        page_size: "20",
-        ...queryParams,
-      },
+      params: { ...queryParams },
       ...(options || {}),
     }
   );

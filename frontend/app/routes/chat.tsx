@@ -6,7 +6,7 @@ export default function Chat() {
   const { id } = useParams();
   const { data, isLoading } = useMessages(id!);
   const sendMessage = useSendMessage();
-  const messages = data?.list ?? [];
+  const messages = data ?? [];
 
   if (isLoading) {
     return (
