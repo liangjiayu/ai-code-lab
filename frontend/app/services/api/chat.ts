@@ -16,3 +16,18 @@ export async function chatCompletions(
     ...(options || {}),
   });
 }
+
+/** Generate Title POST /api/chat/generate_title */
+export async function generateTitle(
+  body: API.GenerateTitleRequest,
+  options?: { [key: string]: any }
+) {
+  return request<any>("/api/chat/generate_title", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: body,
+    ...(options || {}),
+  });
+}

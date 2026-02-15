@@ -65,8 +65,10 @@ declare namespace API {
   type ChatRequest = {
     /** Conversation Id 所属会话 ID */
     conversation_id: string;
-    /** Content 用户消息内容 */
-    content: string;
+    /** Prompt 用户消息内容 */
+    prompt: string;
+    /** Parent Message Id 父消息 ID */
+    parent_message_id?: string | null;
   };
 
   type ConversationCreate = {
@@ -74,8 +76,8 @@ declare namespace API {
     title?: string | null;
     /** Model Name 模型名称 */
     model_name?: string | null;
-    /** Extra Data 扩展数据，如模型配置 temperature、top_p 等 */
-    extra_data?: Record<string, any> | null;
+    /** Id 会话 UUID，由前端生成 */
+    id: string;
     /** User Id 用户标识 */
     user_id: string;
   };
@@ -85,12 +87,12 @@ declare namespace API {
     title?: string | null;
     /** Model Name 模型名称 */
     model_name?: string | null;
-    /** Extra Data 扩展数据，如模型配置 temperature、top_p 等 */
-    extra_data?: Record<string, any> | null;
     /** Id 会话 ID */
     id: string;
     /** User Id 用户标识 */
     user_id: string;
+    /** Extra Data 扩展数据 */
+    extra_data?: Record<string, any> | null;
     /** Created At 创建时间 */
     created_at: string;
     /** Updated At 更新时间 */
@@ -102,7 +104,7 @@ declare namespace API {
     title?: string | null;
     /** Model Name 模型名称 */
     model_name?: string | null;
-    /** Extra Data 扩展数据，如模型配置 temperature、top_p 等 */
+    /** Extra Data 扩展数据 */
     extra_data?: Record<string, any> | null;
   };
 
@@ -116,6 +118,13 @@ declare namespace API {
 
   type deleteUserParams = {
     user_id: number;
+  };
+
+  type GenerateTitleRequest = {
+    /** Conversation Id 所属会话 ID */
+    conversation_id: string;
+    /** Message 用于生成标题的消息内容 */
+    message: string;
   };
 
   type getConversationParams = {
@@ -154,6 +163,8 @@ declare namespace API {
     extra_data?: Record<string, any> | null;
     /** Conversation Id 所属会话 ID */
     conversation_id: string;
+    /** Parent Message Id 父消息 ID */
+    parent_message_id?: string | null;
     /** 消息状态：processing / success / error */
     status?: MessageStatus;
   };
@@ -169,6 +180,8 @@ declare namespace API {
     id: string;
     /** Conversation Id 所属会话 ID */
     conversation_id: string;
+    /** Parent Message Id 父消息 ID */
+    parent_message_id?: string | null;
     /** 消息状态：processing / success / error */
     status: MessageStatus;
     /** Created At 创建时间 */
