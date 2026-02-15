@@ -28,7 +28,7 @@ export function useSendMessage() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (params: { conversation_id: string; content: string }) => {
+    mutationFn: async (params: { conversation_id: string; prompt: string; parent_message_id: string }) => {
       const store = useChatStore.getState();
       store.startStreaming();
 
@@ -36,7 +36,8 @@ export function useSendMessage() {
         "/api/chat/completions",
         {
           conversation_id: params.conversation_id,
-          content: params.content,
+          prompt: params.prompt,
+          parent_message_id: params.parent_message_id,
         },
         {
           onContent: (chunk) => {
@@ -59,10 +60,10 @@ export function useSendMessage() {
       const previousData = queryClient.getQueryData<API.MessageOut[]>(["messages", variables.conversation_id]);
 
       const optimisticMessage: API.MessageOut = {
-        id: `temp-${Date.now()}`,
+        id: variables.parent_message_id,
         conversation_id: variables.conversation_id,
         role: "user" as API.MessageRole,
-        content: variables.content,
+        content: variables.prompt,
         status: "success" as API.MessageStatus,
         created_at: new Date().toISOString(),
       };
@@ -84,10 +85,26 @@ export function useSendMessage() {
       useChatStore.getState().resetStreaming();
     },
     onSuccess: (_data, variables) => {
+      const { streamingContent } = useChatStore.getState();
+
+      // 将流式内容作为 assistant 消息写入 React Query 缓存
+      if (streamingContent) {
+        const assistantMessage: API.MessageOut = {
+          id: `assistant-${variables.parent_message_id}`,
+          conversation_id: variables.conversation_id,
+          role: "assistant" as API.MessageRole,
+          content: streamingContent,
+          status: "success" as API.MessageStatus,
+          created_at: new Date().toISOString(),
+        };
+
+        queryClient.setQueryData<API.MessageOut[]>(
+          ["messages", variables.conversation_id],
+          (old) => [...(old ?? []), assistantMessage]
+        );
+      }
+
       useChatStore.getState().resetStreaming();
-      queryClient.invalidateQueries({
-        queryKey: ["messages", variables.conversation_id],
-      });
     },
   });
 }

@@ -2,7 +2,7 @@ import { useRef, useCallback } from "react";
 import { useParams } from "react-router";
 import { RiAddLine, RiMore2Fill, RiArrowDownSLine, RiMicLine } from "@remixicon/react";
 import { useChatStore } from "~/stores/chat-store";
-import { useCreateConversation } from "~/queries/use-conversations";
+import { useCreateConversation, useGenerateTitle } from "~/queries/use-conversations";
 import { useSendMessage } from "~/queries/use-messages";
 
 const suggestions = [
@@ -20,6 +20,7 @@ export function ChatInput() {
 
   const createConversation = useCreateConversation();
   const sendMessage = useSendMessage();
+  const generateTitle = useGenerateTitle();
   const isStreaming = useChatStore((s) => s.isStreaming);
   const isSending = createConversation.isPending || sendMessage.isPending || isStreaming;
 
@@ -53,12 +54,39 @@ export function ChatInput() {
     }
 
     if (id) {
+      // 已有对话：直接发送消息
+      const parentMessageId = crypto.randomUUID();
       sendMessage.mutate({
-        content: text,
         conversation_id: id,
+        prompt: text,
+        parent_message_id: parentMessageId,
       });
     } else {
-      createConversation.mutate(text);
+      // 新对话：先创建会话，再发送消息
+      const conversationId = crypto.randomUUID();
+      createConversation.mutate(
+        { id: conversationId, title: "新对话" },
+        {
+          onSuccess: () => {
+            const parentMessageId = crypto.randomUUID();
+            sendMessage.mutate(
+              {
+                conversation_id: conversationId,
+                prompt: text,
+                parent_message_id: parentMessageId,
+              },
+              {
+                onSuccess: () => {
+                  generateTitle.mutate({
+                    conversation_id: conversationId,
+                    message: text,
+                  });
+                },
+              }
+            );
+          },
+        }
+      );
     }
   };
 

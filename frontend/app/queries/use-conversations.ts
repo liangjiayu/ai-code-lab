@@ -5,6 +5,7 @@ import {
   createConversation,
   deleteConversation,
 } from "~/services/api/conversations";
+import { generateTitle } from "~/services/api/chat";
 
 const USER_ID = "xiaoming";
 
@@ -20,13 +21,25 @@ export function useCreateConversation() {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (title: string) =>
-      createConversation({ title, user_id: USER_ID }),
+    mutationFn: (params: { id: string; title: string }) =>
+      createConversation({ id: params.id, title: params.title, user_id: USER_ID }),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
       if (data?.id) {
         navigate(`/${data.id}`);
       }
+    },
+  });
+}
+
+export function useGenerateTitle() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (params: { conversation_id: string; message: string }) =>
+      generateTitle({ conversation_id: params.conversation_id, message: params.message }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
     },
   });
 }
