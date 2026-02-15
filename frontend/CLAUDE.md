@@ -51,6 +51,16 @@ Routes defined in `app/routes.ts`:
 - **Zustand** for client-side UI state (sidebar toggle, active conversation, input value)
 - **React Query** for server state — QueryClient configured with 60s staleTime, 1 retry
 
+### Icons
+
+使用 `@remixicon/react` 的 SVG 组件，**不要**使用 `<i class="ri-xxx">` 的字体图标方式。
+
+```tsx
+import { RiMenuLine, RiEditLine } from "@remixicon/react";
+
+<RiMenuLine size={16} />
+```
+
 ### Styling
 
 Tailwind CSS v4 with custom theme variables defined in `app/app.css` (`--color-sidebar-bg`, `--color-accent`, etc.). Light theme with Gemini-inspired design tokens.

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import {
   getConversations,
   createConversation,
+  updateConversation,
   deleteConversation,
 } from "~/services/api/conversations";
 import { generateTitle } from "~/services/api/chat";
@@ -38,6 +39,21 @@ export function useGenerateTitle() {
   return useMutation({
     mutationFn: (params: { conversation_id: string; message: string }) =>
       generateTitle({ conversation_id: params.conversation_id, message: params.message }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    },
+  });
+}
+
+export function useUpdateConversation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (params: { conversation_id: string; title: string }) =>
+      updateConversation(
+        { conversation_id: params.conversation_id },
+        { title: params.title }
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
     },
