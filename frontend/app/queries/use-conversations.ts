@@ -26,7 +26,7 @@ export function useCreateConversation() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["conversations"] });
       if (data?.id) {
-        navigate(`/${data.id}`);
+        navigate(`/chat/${data.id}`);
       }
     },
   });

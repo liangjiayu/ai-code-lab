@@ -7,7 +7,7 @@ interface ConversationItemProps {
 export function ConversationItem({ conversation }: ConversationItemProps) {
   return (
     <NavLink
-      to={`/${conversation.id}`}
+      to={`/chat/${conversation.id}`}
       className={({ isActive }) =>
         `block w-full text-left px-3 py-2.5 rounded-lg text-sm truncate transition-colors ${
           isActive
