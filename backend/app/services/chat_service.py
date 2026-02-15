@@ -5,8 +5,10 @@ import httpx
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
+from app.repositories.conversation_repository import ConversationRepository
 from app.repositories.message_repository import MessageRepository
-from app.schemas.chat import ChatRequest
+from app.schemas.chat import ChatRequest, GenerateTitleRequest
+from app.schemas.conversation import ConversationUpdate
 from app.schemas.message import MessageCreate, MessageRole, MessageStatus, MessageUpdate
 from app.services.conversation_service import get_conversation
 
@@ -86,3 +88,40 @@ async def chat(db: AsyncSession, chat_in: ChatRequest) -> AsyncGenerator[str, No
 	await MessageRepository.update(db, ai_message, MessageUpdate(content=full_content, status=MessageStatus.success))
 	yield f"data: {json.dumps({'message_id': str(ai_message.id)}, ensure_ascii=False)}\n\n"
 	yield "data: [DONE]\n\n"
+
+
+async def generate_title(db: AsyncSession, req: GenerateTitleRequest) -> str:
+	"""根据消息内容生成会话标题，并更新数据库"""
+	# 1. 验证会话存在
+	conversation = await get_conversation(db, req.conversation_id)
+
+	# 2. 调用大模型生成标题
+	messages = [
+		{
+			"role": "system",
+			"content": "你是一个标题生成助手。根据用户提供的消息内容，生成一个简短的会话标题（不超过20个字）。只返回标题文本，不要包含引号或其他额外内容。",
+		},
+		{"role": "user", "content": req.message},
+	]
+
+	async with httpx.AsyncClient(timeout=30) as client:
+		response = await client.post(
+			f"{settings.DEEPSEEK_BASE_URL}/chat/completions",
+			headers={
+				"Authorization": f"Bearer {settings.DEEPSEEK_API_KEY}",
+				"Content-Type": "application/json",
+			},
+			json={
+				"model": settings.DEEPSEEK_MODEL,
+				"messages": messages,
+				"stream": False,
+			},
+		)
+		response.raise_for_status()
+		data = response.json()
+		title = data["choices"][0]["message"]["content"].strip()
+
+	# 3. 更新会话标题
+	await ConversationRepository.update(db, conversation, ConversationUpdate(title=title))
+
+	return title

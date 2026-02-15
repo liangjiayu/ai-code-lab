@@ -2,7 +2,8 @@ from fastapi import APIRouter
 from starlette.responses import StreamingResponse
 
 from app.core.database import DB
-from app.schemas.chat import ChatRequest
+from app.schemas.chat import ChatRequest, GenerateTitleRequest
+from app.schemas.response import ApiResponse
 from app.services import chat_service
 
 router = APIRouter(prefix="/chat", tags=["Chat"])
@@ -18,3 +19,9 @@ async def chat_completions(chat_in: ChatRequest, db: DB):
 			"Connection": "keep-alive",
 		},
 	)
+
+
+@router.post("/generate_title")
+async def generate_title(req: GenerateTitleRequest, db: DB):
+	title = await chat_service.generate_title(db, req)
+	return ApiResponse.ok(data={"title": title})
