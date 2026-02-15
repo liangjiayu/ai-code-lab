@@ -25,6 +25,7 @@ class MessageBase(BaseModel):
 
 class MessageCreate(MessageBase):
 	conversation_id: uuid.UUID = Field(description="所属会话 ID")
+	parent_message_id: uuid.UUID | None = Field(None, description="父消息 ID")
 	status: MessageStatus = Field(MessageStatus.success, description="消息状态：processing / success / error")
 
 
@@ -37,6 +38,7 @@ class MessageUpdate(BaseModel):
 class MessageOut(MessageBase):
 	id: uuid.UUID = Field(description="消息 ID")
 	conversation_id: uuid.UUID = Field(description="所属会话 ID")
+	parent_message_id: uuid.UUID | None = Field(None, description="父消息 ID")
 	status: MessageStatus = Field(description="消息状态：processing / success / error")
 	created_at: datetime = Field(description="创建时间")
 

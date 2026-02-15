@@ -24,20 +24,22 @@ async def chat(db: AsyncSession, chat_in: ChatRequest) -> AsyncGenerator[str, No
 	user_message_in = MessageCreate(
 		conversation_id=chat_in.conversation_id,
 		role=MessageRole.user,
-		content=chat_in.content,
+		content=chat_in.prompt,
+		parent_message_id=chat_in.parent_message_id,
 		status=MessageStatus.success,
 	)
-	await MessageRepository.create(db, user_message_in)
+	user_message = await MessageRepository.create(db, user_message_in)
 
 	# 4. 组装 messages
 	messages = [{"role": msg.role, "content": msg.content} for msg in history]
-	messages.append({"role": "user", "content": chat_in.content})
+	messages.append({"role": "user", "content": chat_in.prompt})
 
 	# 5. 创建 AI 消息占位（processing 状态）
 	ai_message_in = MessageCreate(
 		conversation_id=chat_in.conversation_id,
 		role=MessageRole.assistant,
 		content="",
+		parent_message_id=user_message.id,
 		status=MessageStatus.processing,
 	)
 	ai_message = await MessageRepository.create(db, ai_message_in)

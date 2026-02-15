@@ -5,7 +5,8 @@ from pydantic import BaseModel, Field
 
 class ChatRequest(BaseModel):
 	conversation_id: uuid.UUID = Field(description="所属会话 ID")
-	content: str = Field(description="用户消息内容")
+	prompt: str = Field(description="用户消息内容")
+	parent_message_id: uuid.UUID | None = Field(None, description="父消息 ID")
 
 
 class GenerateTitleRequest(BaseModel):
