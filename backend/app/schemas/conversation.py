@@ -7,22 +7,23 @@ from pydantic import BaseModel, Field
 class ConversationBase(BaseModel):
 	title: str | None = Field(None, description="会话标题")
 	model_name: str | None = Field(None, description="模型名称")
-	extra_data: dict | None = Field(None, description="扩展数据，如模型配置 temperature、top_p 等")
 
 
 class ConversationCreate(ConversationBase):
-	user_id: str = Field(description="用户标识")
+	id: uuid.UUID = Field(description="会话 UUID，由前端生成")
+	user_id: str = Field(min_length=1, description="用户标识")
 
 
 class ConversationUpdate(BaseModel):
 	title: str | None = Field(None, description="会话标题")
 	model_name: str | None = Field(None, description="模型名称")
-	extra_data: dict | None = Field(None, description="扩展数据，如模型配置 temperature、top_p 等")
+	extra_data: dict | None = Field(None, description="扩展数据")
 
 
 class ConversationOut(ConversationBase):
 	id: uuid.UUID = Field(description="会话 ID")
 	user_id: str = Field(description="用户标识")
+	extra_data: dict | None = Field(None, description="扩展数据")
 	created_at: datetime = Field(description="创建时间")
 	updated_at: datetime = Field(description="更新时间")
 
