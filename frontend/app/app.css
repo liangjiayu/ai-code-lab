@@ -8,11 +8,14 @@
   --color-sidebar-bg: #e9eef6;
   --color-sidebar-hover: #dde3ed;
   --color-sidebar-text: #1f1f1f;
-  --color-sidebar-text-muted: #5f6368;
   --color-sidebar-active: #d3e3fd;
   --color-main-bg: #f0f4f9;
   --color-input-bg: #ffffff;
   --color-accent: #4285f4;
-  --color-chip-bg: #f0f4f9;
-  --color-chip-hover: #e2e8f0;
+  /* shadcn semantic tokens */
+  --color-input: #e5e7eb;
+  --color-ring: #4285f4;
+  --color-destructive: #ef4444;
+  --color-foreground: #1f1f1f;
+  --color-muted-foreground: #6b7280;
 }
