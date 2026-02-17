@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Input } from "~/components/base";
 
-export default function ComponentsPage() {
+export default function InputPage() {
   const [value, setValue] = useState("");
 
   return (
-    <div className="mx-auto max-w-2xl space-y-10 p-8">
-      <h1 className="text-2xl font-bold">Components</h1>
+    <div className="max-w-2xl space-y-10">
+      <h1 className="text-2xl font-bold">Input</h1>
 
       {/* Default */}
       <section className="space-y-2">

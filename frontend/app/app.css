@@ -2,8 +2,9 @@
 @plugin "@tailwindcss/typography";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans:
+    "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
   --color-sidebar-bg: #e9eef6;
   --color-sidebar-hover: #dde3ed;
@@ -12,10 +13,18 @@
   --color-main-bg: #f0f4f9;
   --color-input-bg: #ffffff;
   --color-accent: #4285f4;
+
   /* shadcn semantic tokens */
+  --color-background: #ffffff;
+  --color-foreground: #1f1f1f;
+  --color-primary: #4285f4;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #1f1f1f;
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #6b7280;
+  --color-destructive: #ef4444;
+  --color-border: #e5e7eb;
   --color-input: #e5e7eb;
   --color-ring: #4285f4;
-  --color-destructive: #ef4444;
-  --color-foreground: #1f1f1f;
-  --color-muted-foreground: #6b7280;
 }
