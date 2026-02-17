@@ -53,12 +53,12 @@ Routes defined in `src/routes.ts`:
 
 ### Icons
 
-使用 `@remixicon/react` 的 SVG 组件，**不要**使用 `<i class="ri-xxx">` 的字体图标方式。
+使用 `lucide-react` 的 SVG 组件（shadcn/ui 官方推荐图标库）。
 
 ```tsx
-import { RiMenuLine, RiEditLine } from "@remixicon/react";
+import { Menu, Pencil } from "lucide-react";
 
-<RiMenuLine size={16} />
+<Menu size={16} />
 ```
 
 ### Styling

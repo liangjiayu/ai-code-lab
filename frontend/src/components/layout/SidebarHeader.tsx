@@ -1,4 +1,4 @@
-import { RiMenuLine, RiSearchLine, RiEditLine, RiHomeLine, RiArrowRightSLine } from "@remixicon/react";
+import { Menu, Search, Pencil, Home, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router";
 import { useChatStore } from "@/stores/chat-store";
 
@@ -18,13 +18,13 @@ export function SidebarHeader() {
           className="p-2 rounded-full hover:bg-sidebar-hover text-sidebar-text transition-colors"
           aria-label="折叠侧边栏"
         >
-          <RiMenuLine size={20} />
+          <Menu size={20} />
         </button>
         <button
           className="p-2 rounded-full hover:bg-sidebar-hover text-sidebar-text transition-colors"
           aria-label="搜索"
         >
-          <RiSearchLine size={20} />
+          <Search size={20} />
         </button>
       </div>
 
@@ -32,18 +32,18 @@ export function SidebarHeader() {
         onClick={handleNewChat}
         className="flex items-center gap-3 w-full px-3 py-2.5 rounded-full text-sidebar-text hover:bg-sidebar-hover transition-colors text-sm"
       >
-        <RiEditLine size={18} />
+        <Pencil size={18} />
         发起新对话
       </button>
 
       <button className="flex items-center gap-3 w-full px-3 py-2.5 rounded-full text-sidebar-text hover:bg-sidebar-hover transition-colors text-sm">
-        <RiHomeLine size={18} />
+        <Home size={18} />
         我的内容
       </button>
 
       <div className="flex items-center justify-between w-full px-3 py-2.5 rounded-full text-sidebar-text hover:bg-sidebar-hover transition-colors text-sm cursor-pointer">
         <span className="font-medium">Gem</span>
-        <RiArrowRightSLine size={16} />
+        <ChevronRight size={16} />
       </div>
     </div>
   );

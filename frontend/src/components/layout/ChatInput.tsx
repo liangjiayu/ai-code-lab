@@ -1,6 +1,6 @@
 import { useRef, useCallback } from "react";
 import { useParams } from "react-router";
-import { RiAddLine, RiMore2Fill, RiArrowDownSLine, RiMicLine } from "@remixicon/react";
+import { Plus, MoreHorizontal, ChevronDown, Mic } from "lucide-react";
 import { useChatStore } from "@/stores/chat-store";
 import { useCreateConversation, useGenerateTitle } from "@/queries/use-conversations";
 import { useSendMessage } from "@/queries/use-messages";
@@ -110,26 +110,26 @@ export function ChatInput() {
                 className="p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
                 aria-label="添加"
               >
-                <RiAddLine size={20} />
+                <Plus size={20} />
               </button>
               <button
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-gray-100 text-gray-500 transition-colors text-sm"
                 aria-label="工具"
               >
-                <RiMore2Fill size={18} />
+                <MoreHorizontal size={18} />
                 工具
               </button>
             </div>
             <div className="flex items-center gap-1">
               <button className="flex items-center gap-1 px-3 py-1.5 rounded-full hover:bg-gray-100 text-gray-500 transition-colors text-sm">
                 快速
-                <RiArrowDownSLine size={14} />
+                <ChevronDown size={14} />
               </button>
               <button
                 className="p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
                 aria-label="语音输入"
               >
-                <RiMicLine size={20} />
+                <Mic size={20} />
               </button>
             </div>
           </div>
