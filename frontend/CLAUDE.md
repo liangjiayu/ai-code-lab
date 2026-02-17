@@ -16,7 +16,7 @@ pnpm openapi2ts   # Re-generate API services from backend OpenAPI spec
 
 This is a React SPA (SSR disabled via `react-router.config.ts`) built with React Router v7, styled after a Gemini-like chat interface.
 
-**Tech stack:** React 19, React Router v7 (file-based routing), Vite 7, Tailwind CSS v4, Zustand, TanStack React Query, Axios, @headlessui/react, Remixicon icons, TypeScript, pnpm
+**Tech stack:** React 19, React Router v7 (file-based routing), Vite 7, Tailwind CSS v4, shadcn/ui (Radix UI), Zustand, TanStack React Query, Axios, Remixicon icons, TypeScript, pnpm
 
 **Path alias:** `~/` maps to `app/`
 
@@ -63,7 +63,7 @@ import { RiMenuLine, RiEditLine } from "@remixicon/react";
 
 ### Styling
 
-Tailwind CSS v4 with custom theme variables defined in `app/app.css` (`--color-sidebar-bg`, `--color-accent`, etc.). Light theme with Gemini-inspired design tokens.
+Tailwind CSS v4 + shadcn/ui，CSS 变量定义在 `app/app.css` 中，使用 oklch 颜色空间和 shadcn 语义变量（`--sidebar`、`--accent`、`--background` 等）。Light theme with Gemini-inspired design tokens.
 
 ### Component hierarchy
 
