@@ -1,4 +1,4 @@
-import { Menu, Star } from "lucide-react";
+import { RiMenuLine, RiStarFill } from "@remixicon/react";
 import { useChatStore } from "@/stores/chat-store";
 
 export function MainHeader() {
@@ -14,14 +14,14 @@ export function MainHeader() {
             className="p-2 rounded-full hover:bg-white/60 text-gray-600 transition-colors"
             aria-label="展开侧边栏"
           >
-            <Menu size={20} />
+            <RiMenuLine size={20} />
           </button>
         )}
         <span className="text-xl font-semibold text-gray-700">Gemini</span>
       </div>
       <div className="flex items-center gap-3">
         <button className="flex items-center gap-2 px-4 py-2 rounded-full border border-blue-200 bg-white text-accent text-sm font-medium hover:bg-blue-50 transition-colors">
-          <Star size={16} fill="currentColor" />
+          <RiStarFill size={16} />
           升级到 Google AI Plus
         </button>
         <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white text-sm font-medium">

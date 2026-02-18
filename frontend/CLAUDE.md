@@ -53,12 +53,13 @@ Routes defined in `src/routes.ts`:
 
 ### Icons
 
-使用 `lucide-react` 的 SVG 组件（shadcn/ui 官方推荐图标库）。
+- **shadcn/ui 基础组件**（`src/components/ui/`）：保留 `lucide-react`，与 shadcn 生态保持一致
+- **业务组件**：使用 `@remixicon/react`，图标名称格式为 `Ri{名称}{Line|Fill}`
 
 ```tsx
-import { Menu, Pencil } from "lucide-react";
+import { RiMenuLine, RiPencilLine } from "@remixicon/react";
 
-<Menu size={16} />
+<RiMenuLine size={16} />
 ```
 
 ### Styling

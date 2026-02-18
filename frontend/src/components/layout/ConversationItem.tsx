@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate, useParams } from "react-router";
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
+import { RiMore2Line, RiPencilLine, RiDeleteBinLine } from "@remixicon/react";
 import { useUpdateConversation, useDeleteConversation } from "@/queries/use-conversations";
 import {
   DropdownMenu,
@@ -100,16 +100,16 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
                 menuOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
               }`}
             >
-              <MoreVertical size={16} />
+              <RiMore2Line size={16} />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-36">
             <DropdownMenuItem onSelect={() => setRenameOpen(true)}>
-              <Pencil size={16} />
+              <RiPencilLine size={16} />
               重命名
             </DropdownMenuItem>
             <DropdownMenuItem variant="destructive" onSelect={() => setDeleteOpen(true)}>
-              <Trash2 size={16} />
+              <RiDeleteBinLine size={16} />
               删除
             </DropdownMenuItem>
           </DropdownMenuContent>

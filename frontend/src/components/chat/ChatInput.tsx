@@ -1,6 +1,6 @@
 import { useRef, useCallback } from "react";
 import { useParams } from "react-router";
-import { Sparkles, Globe, Paperclip, ArrowUp } from "lucide-react";
+import { RiSparklingLine, RiGlobalLine, RiAttachmentLine, RiArrowUpLine } from "@remixicon/react";
 import { useChatStore } from "@/stores/chat-store";
 import { useCreateConversation, useGenerateTitle } from "@/queries/use-conversations";
 import { useSendMessage } from "@/queries/use-messages";
@@ -101,11 +101,11 @@ export function ChatInput() {
           <div className="flex items-center justify-between px-4 pb-4 pt-1">
             <div className="flex items-center gap-2">
               <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors">
-                <Sparkles size={15} />
+                <RiSparklingLine size={15} />
                 深度思考
               </button>
               <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors">
-                <Globe size={15} />
+                <RiGlobalLine size={15} />
                 联网搜索
               </button>
             </div>
@@ -114,7 +114,7 @@ export function ChatInput() {
                 className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
                 aria-label="上传文件"
               >
-                <Paperclip size={20} />
+                <RiAttachmentLine size={20} />
               </button>
               <button
                 onClick={handleSend}
@@ -122,7 +122,7 @@ export function ChatInput() {
                 className="w-9 h-9 rounded-full bg-indigo-400 hover:bg-indigo-500 text-white flex items-center justify-center disabled:opacity-40 transition-colors"
                 aria-label="发送"
               >
-                <ArrowUp size={20} />
+                <RiArrowUpLine size={20} />
               </button>
             </div>
           </div>
