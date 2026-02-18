@@ -1,16 +1,10 @@
 import { useRef, useCallback } from "react";
 import { useParams } from "react-router";
-import { Plus, MoreHorizontal, ChevronDown, Mic } from "lucide-react";
+import { Sparkles, Globe, Paperclip, ArrowUp } from "lucide-react";
 import { useChatStore } from "@/stores/chat-store";
 import { useCreateConversation, useGenerateTitle } from "@/queries/use-conversations";
 import { useSendMessage } from "@/queries/use-messages";
 
-const suggestions = [
-  { icon: "🎨", label: "制作图片" },
-  { icon: null, label: "帮我学习" },
-  { icon: null, label: "给我的一天注入活力" },
-  { icon: null, label: "随便写点什么" },
-];
 
 export function ChatInput() {
   const { id } = useParams();
@@ -93,58 +87,45 @@ export function ChatInput() {
   return (
     <div className="px-4 pb-6 pt-2">
       <div className="max-w-3xl mx-auto">
-        <div className="rounded-2xl bg-input-bg shadow-md border border-gray-200/40 overflow-hidden">
+        <div className="rounded-3xl bg-white shadow-sm border border-gray-200 overflow-hidden">
           <textarea
             ref={textareaRef}
             value={inputValue}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            placeholder="问问 Gemini 3"
-            rows={1}
+            placeholder="给 AI 发送消息"
+            rows={2}
             disabled={isSending}
             className="w-full resize-none bg-transparent px-5 pt-4 pb-2 text-base text-gray-800 placeholder-gray-400 outline-none max-h-36 disabled:opacity-50"
           />
-          <div className="flex items-center justify-between px-4 pb-3">
-            <div className="flex items-center gap-1">
-              <button
-                className="p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
-                aria-label="添加"
-              >
-                <Plus size={20} />
+          <div className="flex items-center justify-between px-4 pb-4 pt-1">
+            <div className="flex items-center gap-2">
+              <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors">
+                <Sparkles size={15} />
+                深度思考
               </button>
-              <button
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full hover:bg-gray-100 text-gray-500 transition-colors text-sm"
-                aria-label="工具"
-              >
-                <MoreHorizontal size={18} />
-                工具
+              <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors">
+                <Globe size={15} />
+                联网搜索
               </button>
             </div>
-            <div className="flex items-center gap-1">
-              <button className="flex items-center gap-1 px-3 py-1.5 rounded-full hover:bg-gray-100 text-gray-500 transition-colors text-sm">
-                快速
-                <ChevronDown size={14} />
+            <div className="flex items-center gap-2">
+              <button
+                className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                aria-label="上传文件"
+              >
+                <Paperclip size={20} />
               </button>
               <button
-                className="p-2 rounded-full hover:bg-gray-100 text-gray-500 transition-colors"
-                aria-label="语音输入"
+                onClick={handleSend}
+                disabled={!inputValue.trim() || isSending}
+                className="w-9 h-9 rounded-full bg-indigo-400 hover:bg-indigo-500 text-white flex items-center justify-center disabled:opacity-40 transition-colors"
+                aria-label="发送"
               >
-                <Mic size={20} />
+                <ArrowUp size={20} />
               </button>
             </div>
           </div>
-        </div>
-
-        <div className="flex items-center justify-center gap-3 mt-4 flex-wrap">
-          {suggestions.map((item) => (
-            <button
-              key={item.label}
-              className="flex items-center gap-1.5 px-4 py-2.5 rounded-full bg-white border border-gray-200/60 text-sm text-gray-600 hover:bg-gray-50 hover:shadow-sm transition-all"
-            >
-              {item.icon && <span>{item.icon}</span>}
-              {item.label}
-            </button>
-          ))}
         </div>
       </div>
     </div>
