@@ -1,7 +1,7 @@
 import { Outlet, useLocation } from "react-router";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { MainHeader } from "@/components/layout/MainHeader";
-import { ChatInput } from "@/components/layout/ChatInput";
+import { ChatInput } from "@/components/chat/ChatInput";
 
 export default function AppLayout() {
   const location = useLocation();
