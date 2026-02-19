@@ -4,10 +4,9 @@
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 
   --color-sidebar-bg: #e9eef6;
-  --color-sidebar-hover: #dde3ed;
   --color-sidebar-text: #1f1f1f;
+  --color-sidebar-hover: #dde3ed;
   --color-sidebar-active: #d3e3fd;
   --color-main-bg: #f0f4f9;
   --color-input-bg: #ffffff;
-  --color-accent: #4285f4;
 }

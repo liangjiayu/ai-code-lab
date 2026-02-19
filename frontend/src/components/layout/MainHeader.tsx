@@ -20,11 +20,11 @@ export function MainHeader() {
         <span className="text-xl font-semibold text-gray-700">Gemini</span>
       </div>
       <div className="flex items-center gap-3">
-        <button className="flex items-center gap-2 px-4 py-2 rounded-full border border-blue-200 bg-white text-accent text-sm font-medium hover:bg-blue-50 transition-colors">
+        <button className="flex items-center gap-2 px-4 py-2 rounded-full border border-blue-200 bg-white text-blue-500 text-sm font-medium hover:bg-blue-50 transition-colors">
           <RiStarFill size={16} />
           升级到 Google AI Plus
         </button>
-        <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-white text-sm font-medium">
+        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
           嘉
         </div>
       </div>
