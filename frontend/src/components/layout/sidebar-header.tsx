@@ -1,8 +1,13 @@
-import { RiMenuLine, RiSearchLine, RiPencilLine, RiHomeLine, RiArrowRightSLine } from "@remixicon/react";
+import { RiMenuLine, RiEditBoxLine, RiSearchLine } from "@remixicon/react";
 import { useNavigate } from "react-router";
 import { useChatStore } from "@/stores/chat-store";
+import { cn } from "@/lib/utils";
+
+const btnBase =
+  "flex items-center rounded-full text-sidebar-text hover:bg-sidebar-hover transition-colors";
 
 export function SidebarHeader() {
+  const isSidebarOpen = useChatStore((s) => s.isSidebarOpen);
   const toggleSidebar = useChatStore((s) => s.toggleSidebar);
   const navigate = useNavigate();
 
@@ -15,36 +20,32 @@ export function SidebarHeader() {
       <div className="flex items-center justify-between px-1 mb-2">
         <button
           onClick={toggleSidebar}
-          className="p-2 rounded-full hover:bg-sidebar-hover text-sidebar-text transition-colors"
-          aria-label="折叠侧边栏"
+          className={cn(btnBase, "size-10 justify-center")}
+          aria-label={isSidebarOpen ? "折叠侧边栏" : "展开侧边栏"}
         >
           <RiMenuLine size={20} />
         </button>
-        <button
-          className="p-2 rounded-full hover:bg-sidebar-hover text-sidebar-text transition-colors"
-          aria-label="搜索"
-        >
-          <RiSearchLine size={20} />
-        </button>
+        {isSidebarOpen && (
+          <button
+            className={cn(btnBase, "size-10 justify-center")}
+            aria-label="搜索"
+          >
+            <RiSearchLine size={20} />
+          </button>
+        )}
       </div>
 
       <button
         onClick={handleNewChat}
-        className="flex items-center gap-3 w-full px-3 py-2.5 rounded-full text-sidebar-text hover:bg-sidebar-hover transition-colors text-sm"
+        className={cn(
+          btnBase,
+          "gap-3 text-sm",
+          isSidebarOpen ? "w-full px-3 py-2.5" : "size-10 justify-center mx-auto",
+        )}
       >
-        <RiPencilLine size={18} />
-        发起新对话
+        <RiEditBoxLine size={18} className="shrink-0" />
+        {isSidebarOpen && <span>发起新对话</span>}
       </button>
-
-      <button className="flex items-center gap-3 w-full px-3 py-2.5 rounded-full text-sidebar-text hover:bg-sidebar-hover transition-colors text-sm">
-        <RiHomeLine size={18} />
-        我的内容
-      </button>
-
-      <div className="flex items-center justify-between w-full px-3 py-2.5 rounded-full text-sidebar-text hover:bg-sidebar-hover transition-colors text-sm cursor-pointer">
-        <span className="font-medium">Gem</span>
-        <RiArrowRightSLine size={16} />
-      </div>
     </div>
   );
 }

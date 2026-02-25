@@ -83,7 +83,7 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
         <NavLink
           to={`/chat/${conversation.id}`}
           className={({ isActive }) =>
-            `block w-full text-left px-3 py-2.5 rounded-lg text-sm truncate transition-colors pr-8 ${
+            `block w-full text-left px-3 py-2.5 rounded-full text-sm truncate transition-colors pr-8 ${
               isActive
                 ? "bg-sidebar-active text-sidebar-text font-medium"
                 : "text-sidebar-text hover:bg-sidebar-hover"

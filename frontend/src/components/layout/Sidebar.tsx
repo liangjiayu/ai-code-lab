@@ -8,13 +8,15 @@ export function Sidebar() {
 
   return (
     <aside
-      className={`flex flex-col bg-sidebar-bg transition-all duration-300 ${
-        isSidebarOpen ? "w-72" : "w-0"
-      } overflow-hidden`}
+      className={`flex flex-col bg-sidebar-bg transition-all duration-300 overflow-hidden ${
+        isSidebarOpen ? "w-72" : "w-16"
+      }`}
     >
-      <div className="flex flex-col h-full w-72">
+      <div
+        className={`flex flex-col h-full shrink-0 ${isSidebarOpen ? "w-72" : "w-16"}`}
+      >
         <SidebarHeader />
-        <ConversationList />
+        {isSidebarOpen ? <ConversationList /> : <div className="flex-1" />}
         <SidebarFooter />
       </div>
     </aside>
