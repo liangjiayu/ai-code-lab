@@ -1,5 +1,5 @@
 import { useConversations } from "@/queries/use-conversations";
-import { ConversationItem } from "./ConversationItem";
+import { ConversationItem } from "./conversation-item";
 
 export function ConversationList() {
   const { data, isLoading } = useConversations();

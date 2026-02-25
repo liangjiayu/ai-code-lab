@@ -1,4 +1,4 @@
-import { WelcomeArea } from "@/components/chat/WelcomeArea";
+import { WelcomeArea } from "@/components/chat/welcome-area";
 
 export function meta() {
   return [

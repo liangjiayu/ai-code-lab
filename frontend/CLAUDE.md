@@ -62,6 +62,10 @@ import { RiMenuLine, RiPencilLine } from "@remixicon/react";
 <RiMenuLine size={16} />
 ```
 
+### File naming
+
+`src/components/` 下所有组件文件统一使用 **kebab-case** 命名（如 `chat-input.tsx`、`sidebar-header.tsx`），包括 shadcn/ui 和业务组件。
+
 ### Styling
 
 Tailwind CSS v4 + shadcn/ui，CSS 变量定义在 `src/app.css` 中，使用 oklch 颜色空间和 shadcn 语义变量（`--sidebar`、`--accent`、`--background` 等）。Light theme with Gemini-inspired design tokens.

@@ -1,7 +1,7 @@
 import { useChatStore } from "@/stores/chat-store";
-import { SidebarHeader } from "./SidebarHeader";
-import { ConversationList } from "./ConversationList";
-import { SidebarFooter } from "./SidebarFooter";
+import { SidebarHeader } from "./sidebar-header";
+import { ConversationList } from "./conversation-list";
+import { SidebarFooter } from "./sidebar-footer";
 
 export function Sidebar() {
   const isSidebarOpen = useChatStore((s) => s.isSidebarOpen);

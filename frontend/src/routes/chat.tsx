@@ -1,6 +1,6 @@
 import { useParams } from "react-router";
 import { useMessages, useSendMessage } from "@/queries/use-messages";
-import { ChatMessageList } from "@/components/chat/ChatMessageList";
+import { ChatMessageList } from "@/components/chat/chat-message-list";
 
 export default function Chat() {
   const { id } = useParams();
