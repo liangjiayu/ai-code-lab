@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate, useParams } from "react-router";
-import { RiMore2Line, RiPencilLine, RiDeleteBinLine } from "@remixicon/react";
+import { RiMore2Line, RiPencilLine, RiDeleteBinLine, RiMore2Fill } from "@remixicon/react";
 import { useUpdateConversation, useDeleteConversation } from "@/queries/use-conversations";
 import {
   DropdownMenu,
@@ -85,7 +85,7 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
           className={({ isActive }) =>
             `block w-full text-left px-3 py-2.5 rounded-full text-sm truncate transition-colors pr-8 ${
               isActive
-                ? "bg-sidebar-active text-sidebar-text font-medium"
+                ? "bg-sidebar-active text-sidebar-active-text font-medium"
                 : "text-sidebar-text hover:bg-sidebar-hover"
             }`
           }
@@ -96,11 +96,11 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
         <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
           <DropdownMenuTrigger asChild>
             <button
-              className={`absolute right-1 top-1/2 -translate-y-1/2 z-10 p-1 rounded-md hover:bg-black/10 text-sidebar-text cursor-pointer transition-opacity ${
+              className={`absolute right-1 top-1/2 -translate-y-1/2 z-10 p-1 rounded-full hover:bg-white text-sidebar-text cursor-pointer transition-opacity ${
                 menuOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
               }`}
             >
-              <RiMore2Line size={16} />
+              <RiMore2Fill size={16} />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-36">
