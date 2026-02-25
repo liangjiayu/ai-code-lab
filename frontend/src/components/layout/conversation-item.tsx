@@ -1,7 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import { NavLink, useNavigate, useParams } from "react-router";
-import { RiMore2Line, RiPencilLine, RiDeleteBinLine, RiMore2Fill } from "@remixicon/react";
-import { useUpdateConversation, useDeleteConversation } from "@/queries/use-conversations";
+import {
+  RiMore2Line,
+  RiPencilLine,
+  RiDeleteBinLine,
+  RiMore2Fill,
+} from "@remixicon/react";
+import {
+  useUpdateConversation,
+  useDeleteConversation,
+} from "@/queries/use-conversations";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,6 +22,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -62,7 +71,7 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
     }
     updateMutation.mutate(
       { conversation_id: conversation.id!, title: trimmed },
-      { onSuccess: () => setRenameOpen(false) }
+      { onSuccess: () => setRenameOpen(false) },
     );
   };
 
@@ -103,12 +112,15 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
               <RiMore2Fill size={16} />
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-36">
+          <DropdownMenuContent className="w-36">
             <DropdownMenuItem onSelect={() => setRenameOpen(true)}>
               <RiPencilLine size={16} />
               重命名
             </DropdownMenuItem>
-            <DropdownMenuItem variant="destructive" onSelect={() => setDeleteOpen(true)}>
+            <DropdownMenuItem
+              variant="destructive"
+              onSelect={() => setDeleteOpen(true)}
+            >
               <RiDeleteBinLine size={16} />
               删除
             </DropdownMenuItem>
@@ -118,7 +130,7 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
 
       {/* 重命名弹窗 */}
       <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
-        <DialogContent showCloseButton={false} className="sm:max-w-sm">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>重命名会话</DialogTitle>
           </DialogHeader>
@@ -131,9 +143,9 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
             }}
           />
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setRenameOpen(false)}>
-              取消
-            </Button>
+            <DialogClose asChild>
+              <Button variant="outline">关闭</Button>
+            </DialogClose>
             <Button onClick={handleRename} disabled={updateMutation.isPending}>
               保存
             </Button>
@@ -143,7 +155,7 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
 
       {/* 删除确认弹窗 */}
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <AlertDialogContent className="sm:max-w-sm">
+        <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>删除会话</AlertDialogTitle>
             <AlertDialogDescription>
