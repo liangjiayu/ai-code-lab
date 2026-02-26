@@ -1,6 +1,10 @@
+import type { AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 
-const request = async <T = any>(url: string, options?: any): Promise<T> => {
+const request = async <T = unknown>(
+  url: string,
+  options?: AxiosRequestConfig,
+): Promise<T> => {
   const { method = 'GET', params, data, headers, ...rest } = options || {};
   const response = await axios({
     url,

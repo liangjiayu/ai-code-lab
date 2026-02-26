@@ -1,6 +1,6 @@
-import { RiSettings3Line } from "@remixicon/react";
-import { useChatStore } from "@/stores/chat-store";
-import { cn } from "@/lib/utils";
+import { RiSettings3Line } from '@remixicon/react';
+import { cn } from '@/lib/utils';
+import { useChatStore } from '@/stores/chat-store';
 
 export function SidebarFooter() {
   const isSidebarOpen = useChatStore((s) => s.isSidebarOpen);
@@ -8,9 +8,12 @@ export function SidebarFooter() {
   return (
     <div className="p-3">
       <button
+        type="button"
         className={cn(
-          "flex items-center rounded-full text-sm text-sidebar-text hover:bg-sidebar-hover transition-colors",
-          isSidebarOpen ? "w-full gap-3 px-3 py-2.5" : "size-10 justify-center mx-auto",
+          'flex items-center rounded-full text-sm text-sidebar-text hover:bg-sidebar-hover transition-colors',
+          isSidebarOpen
+            ? 'w-full gap-3 px-3 py-2.5'
+            : 'size-10 justify-center mx-auto',
         )}
       >
         <RiSettings3Line size={18} className="shrink-0" />

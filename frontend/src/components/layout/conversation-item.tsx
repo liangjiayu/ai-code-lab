@@ -1,41 +1,36 @@
-import { useState, useRef, useEffect } from "react";
-import { NavLink, useNavigate, useParams } from "react-router";
-import {
-  RiMore2Line,
-  RiPencilLine,
-  RiDeleteBinLine,
-  RiMore2Fill,
-} from "@remixicon/react";
-import {
-  useUpdateConversation,
-  useDeleteConversation,
-} from "@/queries/use-conversations";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { RiDeleteBinLine, RiMore2Fill, RiPencilLine } from '@remixicon/react';
+import { useEffect, useRef, useState } from 'react';
+import { NavLink, useNavigate, useParams } from 'react-router';
 import {
   AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogAction,
   AlertDialogCancel,
-} from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
+import {
+  useDeleteConversation,
+  useUpdateConversation,
+} from '@/queries/use-conversations';
 
 interface ConversationItemProps {
   conversation: API.ConversationOut;
@@ -50,12 +45,12 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [renameOpen, setRenameOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-  const [title, setTitle] = useState(conversation.title ?? "");
+  const [title, setTitle] = useState(conversation.title ?? '');
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (renameOpen) {
-      setTitle(conversation.title ?? "");
+      setTitle(conversation.title ?? '');
       setTimeout(() => {
         inputRef.current?.focus();
         inputRef.current?.select();
@@ -70,17 +65,17 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
       return;
     }
     updateMutation.mutate(
-      { conversation_id: conversation.id!, title: trimmed },
+      { conversation_id: conversation.id as string, title: trimmed },
       { onSuccess: () => setRenameOpen(false) },
     );
   };
 
   const handleDelete = () => {
-    deleteMutation.mutate(conversation.id!, {
+    deleteMutation.mutate(conversation.id as string, {
       onSuccess: () => {
         setDeleteOpen(false);
         if (params.id === conversation.id) {
-          navigate("/");
+          navigate('/');
         }
       },
     });
@@ -94,8 +89,8 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
           className={({ isActive }) =>
             `block w-full text-left px-3 py-2.5 rounded-full text-sm truncate transition-colors pr-8 ${
               isActive
-                ? "bg-sidebar-active text-sidebar-active-text font-medium"
-                : "text-sidebar-text hover:bg-sidebar-hover"
+                ? 'bg-sidebar-active text-sidebar-active-text font-medium'
+                : 'text-sidebar-text hover:bg-sidebar-hover'
             }`
           }
         >
@@ -105,8 +100,9 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
         <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
           <DropdownMenuTrigger asChild>
             <button
+              type="button"
               className={`absolute right-1 top-1/2 -translate-y-1/2 z-10 p-1 rounded-full hover:bg-white text-sidebar-text cursor-pointer transition-opacity ${
-                menuOpen ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                menuOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
               }`}
             >
               <RiMore2Fill size={16} />
@@ -139,7 +135,7 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === "Enter") handleRename();
+              if (e.key === 'Enter') handleRename();
             }}
           />
           <DialogFooter>

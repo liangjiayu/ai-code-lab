@@ -1,13 +1,16 @@
-import { useRef, useEffect } from "react";
-import Markdown from "react-markdown";
-import { useChatStore } from "@/stores/chat-store";
+import { useEffect, useRef } from 'react';
+import Markdown from 'react-markdown';
+import { useChatStore } from '@/stores/chat-store';
 
 interface ChatMessageListProps {
   messages: API.MessageOut[];
   isAiLoading?: boolean;
 }
 
-export function ChatMessageList({ messages, isAiLoading }: ChatMessageListProps) {
+export function ChatMessageList({
+  messages,
+  isAiLoading,
+}: ChatMessageListProps) {
   const streamingContent = useChatStore((s) => s.streamingContent);
   const isStreaming = useChatStore((s) => s.isStreaming);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -32,14 +35,19 @@ export function ChatMessageList({ messages, isAiLoading }: ChatMessageListProps)
     <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6">
       <div className="max-w-3xl mx-auto space-y-6">
         {messages.map((message) =>
-          message.role === "user" ? (
+          message.role === 'user' ? (
             <UserMessage key={message.id} message={message} />
           ) : (
             <AiMessage key={message.id} message={message} />
-          )
+          ),
         )}
         {isAiLoading && !streamingContent && <LoadingIndicator />}
-        {streamingContent && <StreamingMessage content={streamingContent} isStreaming={isStreaming} />}
+        {streamingContent && (
+          <StreamingMessage
+            content={streamingContent}
+            isStreaming={isStreaming}
+          />
+        )}
       </div>
     </div>
   );
@@ -68,7 +76,13 @@ function AiMessage({ message }: { message: API.MessageOut }) {
   );
 }
 
-function StreamingMessage({ content, isStreaming }: { content: string; isStreaming: boolean }) {
+function StreamingMessage({
+  content,
+  isStreaming,
+}: {
+  content: string;
+  isStreaming: boolean;
+}) {
   return (
     <div className="flex items-start gap-3">
       <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center text-sm font-medium shrink-0">
@@ -76,7 +90,9 @@ function StreamingMessage({ content, isStreaming }: { content: string; isStreami
       </div>
       <div className="flex-1 min-w-0 pt-1 text-gray-800 text-base leading-relaxed prose prose-sm max-w-none prose-p:my-2 prose-headings:my-3 prose-ul:my-2 prose-ol:my-2 prose-pre:my-2 prose-code:text-sm prose-code:bg-gray-100 prose-code:px-1 prose-code:py-0.5 prose-code:rounded prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:rounded-lg prose-pre:p-4">
         <Markdown>{content}</Markdown>
-        {isStreaming && <span className="inline-block w-2 h-4 ml-0.5 bg-purple-500 animate-pulse" />}
+        {isStreaming && (
+          <span className="inline-block w-2 h-4 ml-0.5 bg-purple-500 animate-pulse" />
+        )}
       </div>
     </div>
   );

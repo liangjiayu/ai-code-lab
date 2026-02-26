@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { create } from 'zustand';
 
 interface ChatStore {
   isSidebarOpen: boolean;
@@ -19,14 +19,14 @@ export const useChatStore = create<ChatStore>((set) => ({
   isSidebarOpen: true,
   toggleSidebar: () => set((s) => ({ isSidebarOpen: !s.isSidebarOpen })),
 
-  inputValue: "",
+  inputValue: '',
   setInputValue: (value) => set({ inputValue: value }),
 
-  streamingContent: "",
+  streamingContent: '',
   isStreaming: false,
   appendStreamingContent: (chunk) =>
     set((s) => ({ streamingContent: s.streamingContent + chunk })),
-  startStreaming: () => set({ isStreaming: true, streamingContent: "" }),
+  startStreaming: () => set({ isStreaming: true, streamingContent: '' }),
   stopStreaming: () => set({ isStreaming: false }),
-  resetStreaming: () => set({ isStreaming: false, streamingContent: "" }),
+  resetStreaming: () => set({ isStreaming: false, streamingContent: '' }),
 }));

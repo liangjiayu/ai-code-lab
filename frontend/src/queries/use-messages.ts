@@ -1,11 +1,11 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getMessages, createMessage } from "@/services/api/messages";
-import { fetchSSE } from "@/lib/sse-fetch";
-import { useChatStore } from "@/stores/chat-store";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { fetchSSE } from '@/lib/sse-fetch';
+import { createMessage, getMessages } from '@/services/api/messages';
+import { useChatStore } from '@/stores/chat-store';
 
 export function useMessages(conversationId: string) {
   return useQuery({
-    queryKey: ["messages", conversationId],
+    queryKey: ['messages', conversationId],
     queryFn: () => getMessages({ conversation_id: conversationId }),
     enabled: !!conversationId,
   });
@@ -18,7 +18,7 @@ export function useCreateMessage() {
     mutationFn: (body: API.MessageCreate) => createMessage(body),
     onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
-        queryKey: ["messages", variables.conversation_id],
+        queryKey: ['messages', variables.conversation_id],
       });
     },
   });
@@ -28,12 +28,16 @@ export function useSendMessage() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (params: { conversation_id: string; prompt: string; parent_message_id: string }) => {
+    mutationFn: async (params: {
+      conversation_id: string;
+      prompt: string;
+      parent_message_id: string;
+    }) => {
       const store = useChatStore.getState();
       store.startStreaming();
 
       await fetchSSE(
-        "/api/chat/completions",
+        '/api/chat/completions',
         {
           conversation_id: params.conversation_id,
           prompt: params.prompt,
@@ -49,28 +53,31 @@ export function useSendMessage() {
           onComplete: () => {
             useChatStore.getState().stopStreaming();
           },
-        }
+        },
       );
     },
     onMutate: async (variables) => {
       await queryClient.cancelQueries({
-        queryKey: ["messages", variables.conversation_id],
+        queryKey: ['messages', variables.conversation_id],
       });
 
-      const previousData = queryClient.getQueryData<API.MessageOut[]>(["messages", variables.conversation_id]);
+      const previousData = queryClient.getQueryData<API.MessageOut[]>([
+        'messages',
+        variables.conversation_id,
+      ]);
 
       const optimisticMessage: API.MessageOut = {
         id: variables.parent_message_id,
         conversation_id: variables.conversation_id,
-        role: "user" as API.MessageRole,
+        role: 'user' as API.MessageRole,
         content: variables.prompt,
-        status: "success" as API.MessageStatus,
+        status: 'success' as API.MessageStatus,
         created_at: new Date().toISOString(),
       };
 
       queryClient.setQueryData<API.MessageOut[]>(
-        ["messages", variables.conversation_id],
-        (old) => [...(old ?? []), optimisticMessage]
+        ['messages', variables.conversation_id],
+        (old) => [...(old ?? []), optimisticMessage],
       );
 
       return { previousData };
@@ -78,8 +85,8 @@ export function useSendMessage() {
     onError: (_error, variables, context) => {
       if (context?.previousData) {
         queryClient.setQueryData(
-          ["messages", variables.conversation_id],
-          context.previousData
+          ['messages', variables.conversation_id],
+          context.previousData,
         );
       }
       useChatStore.getState().resetStreaming();
@@ -92,15 +99,15 @@ export function useSendMessage() {
         const assistantMessage: API.MessageOut = {
           id: `assistant-${variables.parent_message_id}`,
           conversation_id: variables.conversation_id,
-          role: "assistant" as API.MessageRole,
+          role: 'assistant' as API.MessageRole,
           content: streamingContent,
-          status: "success" as API.MessageStatus,
+          status: 'success' as API.MessageStatus,
           created_at: new Date().toISOString(),
         };
 
         queryClient.setQueryData<API.MessageOut[]>(
-          ["messages", variables.conversation_id],
-          (old) => [...(old ?? []), assistantMessage]
+          ['messages', variables.conversation_id],
+          (old) => [...(old ?? []), assistantMessage],
         );
       }
 

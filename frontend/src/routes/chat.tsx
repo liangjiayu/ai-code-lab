@@ -1,10 +1,10 @@
-import { useParams } from "react-router";
-import { useMessages, useSendMessage } from "@/queries/use-messages";
-import { ChatMessageList } from "@/components/chat/chat-message-list";
+import { useParams } from 'react-router';
+import { ChatMessageList } from '@/components/chat/chat-message-list';
+import { useMessages, useSendMessage } from '@/queries/use-messages';
 
 export default function Chat() {
   const { id } = useParams();
-  const { data, isLoading } = useMessages(id!);
+  const { data, isLoading } = useMessages(id as string);
   const sendMessage = useSendMessage();
   const messages = data ?? [];
 
@@ -16,5 +16,7 @@ export default function Chat() {
     );
   }
 
-  return <ChatMessageList messages={messages} isAiLoading={sendMessage.isPending} />;
+  return (
+    <ChatMessageList messages={messages} isAiLoading={sendMessage.isPending} />
+  );
 }

@@ -1,10 +1,17 @@
-import { useRef, useCallback } from "react";
-import { useParams } from "react-router";
-import { RiSparklingLine, RiGlobalLine, RiAttachmentLine, RiArrowUpLine } from "@remixicon/react";
-import { useChatStore } from "@/stores/chat-store";
-import { useCreateConversation, useGenerateTitle } from "@/queries/use-conversations";
-import { useSendMessage } from "@/queries/use-messages";
-
+import {
+  RiArrowUpLine,
+  RiAttachmentLine,
+  RiGlobalLine,
+  RiSparklingLine,
+} from '@remixicon/react';
+import { useCallback, useRef } from 'react';
+import { useParams } from 'react-router';
+import {
+  useCreateConversation,
+  useGenerateTitle,
+} from '@/queries/use-conversations';
+import { useSendMessage } from '@/queries/use-messages';
+import { useChatStore } from '@/stores/chat-store';
 
 export function ChatInput() {
   const { id } = useParams();
@@ -16,12 +23,13 @@ export function ChatInput() {
   const sendMessage = useSendMessage();
   const generateTitle = useGenerateTitle();
   const isStreaming = useChatStore((s) => s.isStreaming);
-  const isSending = createConversation.isPending || sendMessage.isPending || isStreaming;
+  const isSending =
+    createConversation.isPending || sendMessage.isPending || isStreaming;
 
   const adjustHeight = useCallback(() => {
     const textarea = textareaRef.current;
     if (!textarea) return;
-    textarea.style.height = "auto";
+    textarea.style.height = 'auto';
     const maxHeight = 6 * 24;
     textarea.style.height = `${Math.min(textarea.scrollHeight, maxHeight)}px`;
   }, []);
@@ -32,7 +40,7 @@ export function ChatInput() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -42,9 +50,9 @@ export function ChatInput() {
     const text = inputValue.trim();
     if (!text || isSending) return;
 
-    setInputValue("");
+    setInputValue('');
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = 'auto';
     }
 
     if (id) {
@@ -59,7 +67,7 @@ export function ChatInput() {
       // 新对话：先创建会话，再发送消息
       const conversationId = crypto.randomUUID();
       createConversation.mutate(
-        { id: conversationId, title: "新对话" },
+        { id: conversationId, title: '新对话' },
         {
           onSuccess: () => {
             const parentMessageId = crypto.randomUUID();
@@ -76,10 +84,10 @@ export function ChatInput() {
                     message: text,
                   });
                 },
-              }
+              },
             );
           },
-        }
+        },
       );
     }
   };
@@ -100,23 +108,31 @@ export function ChatInput() {
           />
           <div className="flex items-center justify-between px-4 pb-4 pt-1">
             <div className="flex items-center gap-2">
-              <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors">
+              <button
+                type="button"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors"
+              >
                 <RiSparklingLine size={15} />
                 深度思考
               </button>
-              <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors">
+              <button
+                type="button"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors"
+              >
                 <RiGlobalLine size={15} />
                 联网搜索
               </button>
             </div>
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
                 aria-label="上传文件"
               >
                 <RiAttachmentLine size={20} />
               </button>
               <button
+                type="button"
                 onClick={handleSend}
                 disabled={!inputValue.trim() || isSending}
                 className="w-9 h-9 rounded-full bg-indigo-400 hover:bg-indigo-500 text-white flex items-center justify-center disabled:opacity-40 transition-colors"

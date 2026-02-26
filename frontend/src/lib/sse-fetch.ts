@@ -8,11 +8,11 @@ export async function fetchSSE(
   url: string,
   body: Record<string, unknown>,
   callbacks: FetchSSECallbacks,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ) {
   const response = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
     signal,
   });
@@ -21,25 +21,28 @@ export async function fetchSSE(
     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
 
-  const reader = response.body!.getReader();
+  if (!response.body) {
+    throw new Error('Response body is null');
+  }
+  const reader = response.body.getReader();
   const decoder = new TextDecoder();
-  let buffer = "";
+  let buffer = '';
 
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
 
     buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split("\n");
+    const lines = buffer.split('\n');
     // 保留最后一个可能不完整的行
-    buffer = lines.pop() ?? "";
+    buffer = lines.pop() ?? '';
 
     for (const line of lines) {
       const trimmed = line.trim();
-      if (!trimmed || !trimmed.startsWith("data: ")) continue;
+      if (!trimmed || !trimmed.startsWith('data: ')) continue;
 
       const payload = trimmed.slice(6);
-      if (payload === "[DONE]") return;
+      if (payload === '[DONE]') return;
 
       try {
         const data = JSON.parse(payload);

@@ -13,7 +13,7 @@ export interface ConversationGroup {
 export interface Message {
   id: string;
   conversationId: string;
-  role: "user" | "assistant";
+  role: 'user' | 'assistant';
   content: string;
   createdAt: Date;
 }
