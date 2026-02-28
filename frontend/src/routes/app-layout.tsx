@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from 'react-router';
 import { ChatInput } from '@/components/chat/chat-input';
+import { MainFooter } from '@/components/layout/main-footer';
 import { MainHeader } from '@/components/layout/main-header';
 import { Sidebar } from '@/components/layout/sidebar';
 
@@ -20,6 +21,8 @@ export default function AppLayout() {
           <Outlet />
           <ChatInput />
         </main>
+
+        <MainFooter />
       </div>
     </div>
   );
