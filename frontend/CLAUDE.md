@@ -73,6 +73,9 @@ import { RiMenuLine, RiPencilLine } from "@remixicon/react";
 
 Tailwind CSS v4 + shadcn/ui，CSS 变量定义在 `src/app.css` 中，使用 oklch 颜色空间和 shadcn 语义变量（`--sidebar`、`--accent`、`--background` 等）。Light theme with Gemini-inspired design tokens.
 
+
+- 动态拼接 className 时使用 `cn()` 函数（`@/lib/utils`），不要用模板字符串拼接
+
 ### Component hierarchy
 
 ```

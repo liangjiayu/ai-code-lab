@@ -4,8 +4,9 @@ import {
   RiGlobalLine,
   RiSparklingLine,
 } from '@remixicon/react';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useParams } from 'react-router';
+import { cn } from '@/lib/utils';
 import {
   useCreateConversation,
   useGenerateTitle,
@@ -18,6 +19,8 @@ export function ChatInput() {
   const inputValue = useChatStore((s) => s.inputValue);
   const setInputValue = useChatStore((s) => s.setInputValue);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const [deepThinking, setDeepThinking] = useState(false);
+  const [webSearch, setWebSearch] = useState(false);
 
   const createConversation = useCreateConversation();
   const sendMessage = useSendMessage();
@@ -110,14 +113,26 @@ export function ChatInput() {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="flex items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-gray-700 text-sm transition-colors hover:bg-gray-50"
+                onClick={() => setDeepThinking(!deepThinking)}
+                className={cn(
+                  'flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors',
+                  deepThinking
+                    ? 'border-blue-200 bg-blue-50 text-blue-600'
+                    : 'border-gray-200 text-gray-700 hover:bg-gray-50',
+                )}
               >
                 <RiSparklingLine size={15} />
                 深度思考
               </button>
               <button
                 type="button"
-                className="flex items-center gap-1.5 rounded-full border border-gray-200 px-3 py-1.5 text-gray-700 text-sm transition-colors hover:bg-gray-50"
+                onClick={() => setWebSearch(!webSearch)}
+                className={cn(
+                  'flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors',
+                  webSearch
+                    ? 'border-blue-200 bg-blue-50 text-blue-600'
+                    : 'border-gray-200 text-gray-700 hover:bg-gray-50',
+                )}
               >
                 <RiGlobalLine size={15} />
                 联网搜索
