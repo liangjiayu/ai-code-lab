@@ -1,11 +1,25 @@
 {
+  // Biome (Frontend)
   "biome.lsp.bin": "./frontend/node_modules/@biomejs/biome/bin/biome",
   "biome.requireConfiguration": true,
   "biome.enabled": true,
   "editor.defaultFormatter": "biomejs.biome",
   "editor.formatOnSave": true,
+  "editor.tabSize": 2,
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit",
     "source.organizeImports.biome": "explicit"
+  },
+
+  // Ruff (Backend Python)
+  "ruff.enable": true,
+  "ruff.lint.enable": true,
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.tabSize": 4,
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit",
+      "source.organizeImports": "explicit"
+    }
   },
 }

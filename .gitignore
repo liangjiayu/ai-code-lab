@@ -1,0 +1,10 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# 依赖
+node_modules/
+.venv/
+
+# 日志
+*.log
