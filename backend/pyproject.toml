@@ -1,5 +1,5 @@
 [project]
-name = "fastapi-template"
+name = "ai-backend"
 version = "0.1.0"
 description = "A modern FastAPI project template with async SQLAlchemy"
 readme = "README.md"

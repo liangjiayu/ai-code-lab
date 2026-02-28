@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "ai-frontend",
   "private": true,
   "type": "module",
   "scripts": {
