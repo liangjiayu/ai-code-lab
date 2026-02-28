@@ -1,0 +1,27 @@
+repos:
+  - repo: local
+    hooks:
+      # 后端 Python: Ruff
+      - id: ruff-format
+        name: "🎨 Ruff Format"
+        entry: uv run --project backend ruff format --force-exclude
+        require_serial: true
+        language: system
+        types: [python]
+        files: ^backend/
+
+      - id: ruff-check
+        name: "🔍 Ruff Check"
+        entry: uv run --project backend ruff check --force-exclude --fix
+        require_serial: true
+        language: system
+        types: [python]
+        files: ^backend/
+
+      # 前端: Biome
+      - id: biome-check
+        name: "🎨 Biome Check"
+        entry: ./frontend/node_modules/.bin/biome check --write --no-errors-on-unmatched
+        require_serial: true
+        language: system
+        files: ^frontend/
