@@ -34,27 +34,30 @@ export function ChatMessageList({
   }
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-3xl px-4 pt-1 pb-10">
-        {messages.map((message) =>
-          message.role === 'user' ? (
-            <UserMessage
-              key={message.id}
-              message={message}
-              onEdit={(content) => console.log('edit message:', content)}
+    <div className="relative flex-1 overflow-hidden">
+      <div ref={scrollRef} className="h-full overflow-y-auto">
+        <div className="mx-auto max-w-3xl px-4 pt-1 pb-10">
+          {messages.map((message) =>
+            message.role === 'user' ? (
+              <UserMessage
+                key={message.id}
+                message={message}
+                onEdit={(content) => console.log('edit message:', content)}
+              />
+            ) : (
+              <AiMessage key={message.id} message={message} />
+            ),
+          )}
+          {isAiLoading && !streamingContent && <LoadingIndicator />}
+          {streamingContent && (
+            <StreamingMessage
+              content={streamingContent}
+              isStreaming={isStreaming}
             />
-          ) : (
-            <AiMessage key={message.id} message={message} />
-          ),
-        )}
-        {isAiLoading && !streamingContent && <LoadingIndicator />}
-        {streamingContent && (
-          <StreamingMessage
-            content={streamingContent}
-            isStreaming={isStreaming}
-          />
-        )}
+          )}
+        </div>
       </div>
+      <div className="pointer-events-none absolute right-0 bottom-0 left-0 h-12 bg-linear-to-t from-background to-transparent" />
     </div>
   );
 }
