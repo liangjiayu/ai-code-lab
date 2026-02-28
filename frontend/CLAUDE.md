@@ -62,7 +62,7 @@ Routes defined in `src/routes.ts`:
 ```tsx
 import { RiMenuLine, RiPencilLine } from "@remixicon/react";
 
-<RiMenuLine size={16} />
+<RiMenuLine size={16} />;
 ```
 
 ### File naming
@@ -81,13 +81,6 @@ root.tsx (QueryClientProvider)
       ├─ / → home.tsx → WelcomeArea
       └─ /:id → chat.tsx → ChatMessageList
 ```
-
-### Linting & Formatting
-
-使用 **Biome** (Rust-based all-in-one) 做 linting + formatting，配置在 `biome.json`：
-- 单引号 + 带分号（Biome 默认）
-- `src/services/api/` 已排除（自动生成代码）
-- VSCode 保存时自动格式化（需安装 `biomejs.biome` 扩展，配置在项目根目录 `.vscode/`）
 
 ## Git Commit
 

@@ -22,4 +22,8 @@
       "source.organizeImports": "explicit"
     }
   },
+  
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
 }
