@@ -87,9 +87,9 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
         <NavLink
           to={`/chat/${conversation.id}`}
           className={({ isActive }) =>
-            `block w-full text-left px-3 py-2.5 rounded-full text-sm truncate transition-colors pr-8 ${
+            `block w-full truncate rounded-full px-3 py-2.5 pr-8 text-left text-sm transition-colors ${
               isActive
-                ? 'bg-sidebar-active text-sidebar-active-text font-medium'
+                ? 'bg-sidebar-active font-medium text-sidebar-active-text'
                 : 'text-sidebar-text hover:bg-sidebar-hover'
             }`
           }
@@ -101,7 +101,7 @@ export function ConversationItem({ conversation }: ConversationItemProps) {
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className={`absolute right-1 top-1/2 -translate-y-1/2 z-10 p-1 rounded-full hover:bg-white text-sidebar-text cursor-pointer transition-opacity ${
+              className={`absolute top-1/2 right-1 z-10 -translate-y-1/2 cursor-pointer rounded-full p-1 text-sidebar-text transition-opacity hover:bg-white ${
                 menuOpen ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
               }`}
             >

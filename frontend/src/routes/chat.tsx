@@ -10,7 +10,7 @@ export default function Chat() {
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center text-gray-400">
+      <div className="flex flex-1 items-center justify-center text-gray-400">
         加载中...
       </div>
     );

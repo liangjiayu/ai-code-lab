@@ -11,7 +11,7 @@ export default function AppLayout() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
       <div
-        className={`flex flex-1 flex-col min-w-0 ${isHome ? 'bg-main-bg' : 'bg-white'}`}
+        className={`flex min-w-0 flex-1 flex-col ${isHome ? 'bg-main-bg' : 'bg-white'}`}
       >
         <MainHeader />
         <main

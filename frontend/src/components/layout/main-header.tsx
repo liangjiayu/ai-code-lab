@@ -2,10 +2,10 @@ export function MainHeader() {
   return (
     <header className="flex items-center justify-between px-4 py-3">
       <div className="flex items-center gap-2">
-        <span className="text-xl font-semibold text-gray-700">Gemini</span>
+        <span className="font-semibold text-gray-700 text-xl">Gemini</span>
       </div>
       <div className="flex items-center gap-3">
-        <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-medium">
+        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500 font-medium text-sm text-white">
           嘉
         </div>
       </div>

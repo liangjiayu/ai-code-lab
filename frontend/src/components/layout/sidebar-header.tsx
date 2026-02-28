@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { useChatStore } from '@/stores/chat-store';
 
 const btnBase =
-  'flex items-center rounded-full text-sidebar-text hover:bg-sidebar-hover transition-colors';
+  'flex items-center rounded-full text-sidebar-text hover:bg-sidebar-hover transition-colors cursor-pointer';
 
 export function SidebarHeader() {
   const isSidebarOpen = useChatStore((s) => s.isSidebarOpen);
@@ -17,7 +17,7 @@ export function SidebarHeader() {
 
   return (
     <div className="px-2 pt-3 pb-1">
-      <div className="flex items-center justify-between px-1 mb-2">
+      <div className="mb-2 flex items-center justify-between px-1">
         <button
           type="button"
           onClick={toggleSidebar}
@@ -45,7 +45,7 @@ export function SidebarHeader() {
           'gap-3 text-sm',
           isSidebarOpen
             ? 'w-full px-3 py-2.5'
-            : 'size-10 justify-center mx-auto',
+            : 'mx-auto size-10 justify-center',
         )}
       >
         <RiEditBoxLine size={18} className="shrink-0" />

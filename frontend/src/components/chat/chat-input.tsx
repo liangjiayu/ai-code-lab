@@ -93,9 +93,9 @@ export function ChatInput() {
   };
 
   return (
-    <div className="px-4 pb-6 pt-2">
-      <div className="max-w-3xl mx-auto">
-        <div className="rounded-3xl bg-white shadow-sm border border-gray-200 overflow-hidden">
+    <div className="px-4 pt-2 pb-6">
+      <div className="mx-auto max-w-3xl">
+        <div className="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
           <textarea
             ref={textareaRef}
             value={inputValue}
@@ -104,20 +104,20 @@ export function ChatInput() {
             placeholder="给 AI 发送消息"
             rows={2}
             disabled={isSending}
-            className="w-full resize-none bg-transparent px-5 pt-4 pb-2 text-base text-gray-800 placeholder-gray-400 outline-none max-h-36 disabled:opacity-50"
+            className="max-h-36 w-full resize-none bg-transparent px-5 pt-4 pb-2 text-base text-gray-800 placeholder-gray-400 outline-none disabled:opacity-50"
           />
-          <div className="flex items-center justify-between px-4 pb-4 pt-1">
+          <div className="flex items-center justify-between px-4 pt-1 pb-4">
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-1.5 rounded-full border border-gray-300 px-3 py-1.5 text-gray-700 text-sm transition-colors hover:bg-gray-50"
               >
                 <RiSparklingLine size={15} />
                 深度思考
               </button>
               <button
                 type="button"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 text-sm hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-1.5 rounded-full border border-gray-300 px-3 py-1.5 text-gray-700 text-sm transition-colors hover:bg-gray-50"
               >
                 <RiGlobalLine size={15} />
                 联网搜索
@@ -126,7 +126,7 @@ export function ChatInput() {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                className="p-2 text-gray-400 transition-colors hover:text-gray-600"
                 aria-label="上传文件"
               >
                 <RiAttachmentLine size={20} />
@@ -135,7 +135,7 @@ export function ChatInput() {
                 type="button"
                 onClick={handleSend}
                 disabled={!inputValue.trim() || isSending}
-                className="w-9 h-9 rounded-full bg-indigo-400 hover:bg-indigo-500 text-white flex items-center justify-center disabled:opacity-40 transition-colors"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-400 text-white transition-colors hover:bg-indigo-500 disabled:opacity-40"
                 aria-label="发送"
               >
                 <RiArrowUpLine size={20} />

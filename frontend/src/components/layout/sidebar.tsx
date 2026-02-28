@@ -8,12 +8,12 @@ export function Sidebar() {
 
   return (
     <aside
-      className={`flex flex-col bg-sidebar-bg transition-all duration-300 overflow-hidden ${
+      className={`flex flex-col overflow-hidden bg-sidebar-bg transition-all duration-300 ${
         isSidebarOpen ? 'w-72' : 'w-16'
       }`}
     >
       <div
-        className={`flex flex-col h-full shrink-0 ${isSidebarOpen ? 'w-72' : 'w-16'}`}
+        className={`flex h-full shrink-0 flex-col ${isSidebarOpen ? 'w-72' : 'w-16'}`}
       >
         <SidebarHeader />
         {isSidebarOpen ? <ConversationList /> : <div className="flex-1" />}

@@ -10,10 +10,10 @@ export function SidebarFooter() {
       <button
         type="button"
         className={cn(
-          'flex items-center rounded-full text-sm text-sidebar-text hover:bg-sidebar-hover transition-colors',
+          'flex cursor-pointer items-center rounded-full text-sidebar-text text-sm transition-colors hover:bg-sidebar-hover',
           isSidebarOpen
             ? 'w-full gap-3 px-3 py-2.5'
-            : 'size-10 justify-center mx-auto',
+            : 'mx-auto size-10 justify-center',
         )}
       >
         <RiSettings3Line size={18} className="shrink-0" />
