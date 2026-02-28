@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
-import Markdown from 'react-markdown';
 import { useChatStore } from '@/stores/chat-store';
+import { AiMessage, StreamingMessage } from './ai-message';
+import { LoadingIndicator } from './loading-indicator';
+import { UserMessage } from './user-message';
 
 interface ChatMessageListProps {
   messages: API.MessageOut[];
@@ -32,8 +34,8 @@ export function ChatMessageList({
   }
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6">
-      <div className="mx-auto max-w-3xl space-y-6">
+    <div ref={scrollRef} className="flex-1 overflow-y-auto">
+      <div className="mx-auto max-w-3xl space-y-6 px-4 pt-1 pb-10">
         {messages.map((message) =>
           message.role === 'user' ? (
             <UserMessage key={message.id} message={message} />
@@ -48,66 +50,6 @@ export function ChatMessageList({
             isStreaming={isStreaming}
           />
         )}
-      </div>
-    </div>
-  );
-}
-
-function UserMessage({ message }: { message: API.MessageOut }) {
-  return (
-    <div className="flex justify-end">
-      <div className="max-w-[80%] whitespace-pre-wrap rounded-2xl bg-blue-50 px-4 py-3 text-base text-gray-800 leading-relaxed">
-        {message.content}
-      </div>
-    </div>
-  );
-}
-
-function AiMessage({ message }: { message: API.MessageOut }) {
-  return (
-    <div className="flex items-start gap-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-purple-100 font-medium text-purple-600 text-sm">
-        AI
-      </div>
-      <div className="prose prose-sm prose-headings:my-3 prose-ol:my-2 prose-p:my-2 prose-pre:my-2 prose-ul:my-2 min-w-0 max-w-none flex-1 prose-code:rounded prose-pre:rounded-lg prose-code:bg-gray-100 prose-pre:bg-gray-900 prose-pre:p-4 prose-code:px-1 prose-code:py-0.5 pt-1 prose-code:text-sm prose-pre:text-gray-100 text-base text-gray-800 leading-relaxed">
-        <Markdown>{message.content}</Markdown>
-      </div>
-    </div>
-  );
-}
-
-function StreamingMessage({
-  content,
-  isStreaming,
-}: {
-  content: string;
-  isStreaming: boolean;
-}) {
-  return (
-    <div className="flex items-start gap-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-purple-100 font-medium text-purple-600 text-sm">
-        AI
-      </div>
-      <div className="prose prose-sm prose-headings:my-3 prose-ol:my-2 prose-p:my-2 prose-pre:my-2 prose-ul:my-2 min-w-0 max-w-none flex-1 prose-code:rounded prose-pre:rounded-lg prose-code:bg-gray-100 prose-pre:bg-gray-900 prose-pre:p-4 prose-code:px-1 prose-code:py-0.5 pt-1 prose-code:text-sm prose-pre:text-gray-100 text-base text-gray-800 leading-relaxed">
-        <Markdown>{content}</Markdown>
-        {isStreaming && (
-          <span className="ml-0.5 inline-block h-4 w-2 animate-pulse bg-purple-500" />
-        )}
-      </div>
-    </div>
-  );
-}
-
-function LoadingIndicator() {
-  return (
-    <div className="flex items-start gap-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-purple-100 font-medium text-purple-600 text-sm">
-        AI
-      </div>
-      <div className="flex items-center gap-1.5 pt-3">
-        <span className="h-2 w-2 animate-bounce rounded-full bg-purple-400 [animation-delay:0ms]" />
-        <span className="h-2 w-2 animate-bounce rounded-full bg-purple-400 [animation-delay:150ms]" />
-        <span className="h-2 w-2 animate-bounce rounded-full bg-purple-400 [animation-delay:300ms]" />
       </div>
     </div>
   );
