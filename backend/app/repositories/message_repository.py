@@ -11,12 +11,8 @@ class MessageRepository(BaseRepository):
 	model = Message
 
 	@classmethod
-	async def get_list_by_conversation_id(
-		cls, db: AsyncSession, conversation_id: uuid.UUID
-	) -> list[Message]:
+	async def get_list_by_conversation_id(cls, db: AsyncSession, conversation_id: uuid.UUID) -> list[Message]:
 		result = await db.execute(
-			select(Message)
-			.where(Message.conversation_id == conversation_id)
-			.order_by(Message.created_at.asc())
+			select(Message).where(Message.conversation_id == conversation_id).order_by(Message.created_at.asc())
 		)
 		return list(result.scalars().all())
