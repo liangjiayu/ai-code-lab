@@ -35,10 +35,14 @@ export function ChatMessageList({
 
   return (
     <div ref={scrollRef} className="flex-1 overflow-y-auto">
-      <div className="mx-auto max-w-3xl space-y-6 px-4 pt-1 pb-10">
+      <div className="mx-auto max-w-3xl px-4 pt-1 pb-10">
         {messages.map((message) =>
           message.role === 'user' ? (
-            <UserMessage key={message.id} message={message} />
+            <UserMessage
+              key={message.id}
+              message={message}
+              onEdit={(content) => console.log('edit message:', content)}
+            />
           ) : (
             <AiMessage key={message.id} message={message} />
           ),
