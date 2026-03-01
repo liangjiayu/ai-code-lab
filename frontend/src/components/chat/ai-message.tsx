@@ -17,9 +17,6 @@ import {
 import { cn, copyToClipboard } from '@/lib/utils';
 import { useRetryMessage } from '@/queries/use-messages';
 
-const aiProseClass =
-  'prose prose-sm prose-headings:my-3 prose-ol:my-2 prose-p:my-2 prose-pre:my-2 prose-ul:my-2 min-w-0 max-w-none prose-code:rounded prose-pre:rounded-lg prose-code:bg-gray-100 prose-pre:bg-gray-900 prose-pre:p-4 prose-code:px-1 prose-code:py-0.5 pt-1 prose-code:text-sm prose-pre:text-gray-100 text-base text-gray-800 leading-relaxed';
-
 interface AiMessageProps {
   message: API.MessageOut;
   isLast?: boolean;
@@ -46,7 +43,7 @@ export function AiMessage({ message, isLast }: AiMessageProps) {
 
   return (
     <div className="group/ai-msg">
-      <div className={aiProseClass}>
+      <div className="ai-markdown">
         <Markdown>{message.content}</Markdown>
       </div>
       <div
@@ -108,7 +105,7 @@ export function StreamingMessage({
 }: StreamingMessageProps) {
   return (
     <div>
-      <div className={aiProseClass}>
+      <div className="ai-markdown">
         <Markdown>{content}</Markdown>
         {isStreaming && (
           <span className="ml-0.5 inline-block h-4 w-2 animate-pulse bg-purple-500" />
