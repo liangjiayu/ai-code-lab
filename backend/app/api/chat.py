@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from starlette.responses import StreamingResponse
 
 from app.core.database import DB
-from app.schemas.chat import ChatRequest, GenerateTitleRequest
+from app.schemas.chat import ChatRequest, EditCompletionRequest, GenerateTitleRequest
 from app.schemas.response import ApiResponse
 from app.services import chat_service
 
@@ -13,6 +13,18 @@ router = APIRouter(prefix="/chat", tags=["Chat"])
 async def chat_completions(chat_in: ChatRequest, db: DB):
 	return StreamingResponse(
 		chat_service.chat(db, chat_in),
+		media_type="text/event-stream",
+		headers={
+			"Cache-Control": "no-cache",
+			"Connection": "keep-alive",
+		},
+	)
+
+
+@router.post("/edit_completion")
+async def edit_completion(edit_in: EditCompletionRequest, db: DB):
+	return StreamingResponse(
+		chat_service.edit_completion(db, edit_in),
 		media_type="text/event-stream",
 		headers={
 			"Cache-Control": "no-cache",

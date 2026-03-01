@@ -1,6 +1,7 @@
 import uuid
+from datetime import datetime
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.message import Message
@@ -16,3 +17,11 @@ class MessageRepository(BaseRepository):
 			select(Message).where(Message.conversation_id == conversation_id).order_by(Message.created_at.asc())
 		)
 		return list(result.scalars().all())
+
+	@classmethod
+	async def delete_after_message(cls, db: AsyncSession, conversation_id: uuid.UUID, created_at: datetime):
+		"""删除同会话中指定时间之后的所有消息"""
+		await db.execute(
+			delete(Message).where(Message.conversation_id == conversation_id).where(Message.created_at > created_at)
+		)
+		await db.commit()

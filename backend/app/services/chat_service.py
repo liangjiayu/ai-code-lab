@@ -2,49 +2,36 @@ import json
 from collections.abc import AsyncGenerator
 
 import httpx
+from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.repositories.conversation_repository import ConversationRepository
 from app.repositories.message_repository import MessageRepository
-from app.schemas.chat import ChatRequest, GenerateTitleRequest
+from app.schemas.chat import ChatRequest, EditCompletionRequest, GenerateTitleRequest
 from app.schemas.conversation import ConversationUpdate
 from app.schemas.message import MessageCreate, MessageRole, MessageStatus, MessageUpdate
 from app.services.conversation_service import get_conversation
 
 
-async def chat(db: AsyncSession, chat_in: ChatRequest) -> AsyncGenerator[str, None]:
-	# 1. 验证会话存在
-	await get_conversation(db, chat_in.conversation_id)
-
-	# 2. 加载历史消息
-	history = await MessageRepository.get_list_by_conversation_id(db, chat_in.conversation_id)
-
-	# 3. 保存用户消息
-	user_message_in = MessageCreate(
-		conversation_id=chat_in.conversation_id,
-		role=MessageRole.user,
-		content=chat_in.prompt,
-		parent_message_id=chat_in.parent_message_id,
-		status=MessageStatus.success,
-	)
-	user_message = await MessageRepository.create(db, user_message_in)
-
-	# 4. 组装 messages
-	messages = [{"role": msg.role, "content": msg.content} for msg in history]
-	messages.append({"role": "user", "content": chat_in.prompt})
-
-	# 5. 创建 AI 消息占位（processing 状态）
+async def _stream_completion(
+	db: AsyncSession,
+	conversation_id,
+	messages: list[dict],
+	parent_message_id,
+) -> AsyncGenerator[str, None]:
+	"""公共流式调用逻辑：创建 AI 占位 → 流式调用 → 更新消息"""
+	# 创建 AI 消息占位（processing 状态）
 	ai_message_in = MessageCreate(
-		conversation_id=chat_in.conversation_id,
+		conversation_id=conversation_id,
 		role=MessageRole.assistant,
 		content="",
-		parent_message_id=user_message.id,
+		parent_message_id=parent_message_id,
 		status=MessageStatus.processing,
 	)
 	ai_message = await MessageRepository.create(db, ai_message_in)
 
-	# 6. 流式调用 DeepSeek API
+	# 流式调用 DeepSeek API
 	full_content = ""
 
 	try:
@@ -86,10 +73,64 @@ async def chat(db: AsyncSession, chat_in: ChatRequest) -> AsyncGenerator[str, No
 		await MessageRepository.update(db, ai_message, MessageUpdate(content=error_msg, status=MessageStatus.error))
 		return
 
-	# 7. 流结束，更新 AI 消息内容和状态
+	# 流结束，更新 AI 消息内容和状态
 	await MessageRepository.update(db, ai_message, MessageUpdate(content=full_content, status=MessageStatus.success))
 	yield f"data: {json.dumps({'message_id': str(ai_message.id)}, ensure_ascii=False)}\n\n"
 	yield "data: [DONE]\n\n"
+
+
+async def chat(db: AsyncSession, chat_in: ChatRequest) -> AsyncGenerator[str, None]:
+	# 1. 验证会话存在
+	await get_conversation(db, chat_in.conversation_id)
+
+	# 2. 加载历史消息
+	history = await MessageRepository.get_list_by_conversation_id(db, chat_in.conversation_id)
+
+	# 3. 保存用户消息
+	user_message_in = MessageCreate(
+		conversation_id=chat_in.conversation_id,
+		role=MessageRole.user,
+		content=chat_in.prompt,
+		parent_message_id=chat_in.parent_message_id,
+		status=MessageStatus.success,
+	)
+	user_message = await MessageRepository.create(db, user_message_in)
+
+	# 4. 组装 messages
+	messages = [{"role": msg.role, "content": msg.content} for msg in history]
+	messages.append({"role": "user", "content": chat_in.prompt})
+
+	# 5. 调用公共流式方法
+	async for chunk in _stream_completion(db, chat_in.conversation_id, messages, user_message.id):
+		yield chunk
+
+
+async def edit_completion(db: AsyncSession, edit_in: EditCompletionRequest) -> AsyncGenerator[str, None]:
+	# 1. 验证会话存在
+	await get_conversation(db, edit_in.conversation_id)
+
+	# 2. 获取要编辑的消息，校验 role=user
+	message = await MessageRepository.get_by_id(db, edit_in.message_id)
+	if not message:
+		raise HTTPException(status_code=404, detail="消息不存在")
+	if message.role != MessageRole.user:
+		raise HTTPException(status_code=400, detail="只能编辑用户消息")
+
+	# 3. 删除该消息之后的所有消息
+	await MessageRepository.delete_after_message(db, edit_in.conversation_id, message.created_at)
+
+	# 4. 更新用户消息的 content
+	await MessageRepository.update(db, message, MessageUpdate(content=edit_in.prompt))
+
+	# 5. 重新加载历史消息（包含已更新的用户消息）
+	history = await MessageRepository.get_list_by_conversation_id(db, edit_in.conversation_id)
+
+	# 6. 组装 messages
+	messages = [{"role": msg.role, "content": msg.content} for msg in history]
+
+	# 7. 调用公共流式方法
+	async for chunk in _stream_completion(db, edit_in.conversation_id, messages, message.id):
+		yield chunk
 
 
 async def generate_title(db: AsyncSession, req: GenerateTitleRequest) -> str:
