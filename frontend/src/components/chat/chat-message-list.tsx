@@ -39,11 +39,7 @@ export function ChatMessageList({
         <div className="mx-auto max-w-3xl px-4 pt-1 pb-10">
           {messages.map((message) =>
             message.role === 'user' ? (
-              <UserMessage
-                key={message.id}
-                message={message}
-                onEdit={(content) => console.log('edit message:', content)}
-              />
+              <UserMessage key={message.id} message={message} />
             ) : (
               <AiMessage key={message.id} message={message} />
             ),

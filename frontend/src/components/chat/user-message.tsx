@@ -3,17 +3,18 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
 import { cn, copyToClipboard } from '@/lib/utils';
+import { useEditMessage } from '@/queries/use-messages';
 
 interface UserMessageProps {
   message: API.MessageOut;
-  onEdit?: (content: string) => void;
 }
 
-export function UserMessage({ message, onEdit }: UserMessageProps) {
+export function UserMessage({ message }: UserMessageProps) {
   const [copied, setCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(message.content ?? '');
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const editMessage = useEditMessage();
 
   useEffect(() => {
     if (isEditing && textareaRef.current) {
@@ -43,8 +44,12 @@ export function UserMessage({ message, onEdit }: UserMessageProps) {
 
   const handleSend = () => {
     const trimmed = editValue.trim();
-    if (trimmed && onEdit) {
-      onEdit(trimmed);
+    if (trimmed) {
+      editMessage.mutate({
+        conversation_id: message.conversation_id,
+        message_id: message.id,
+        prompt: trimmed,
+      });
     }
     setIsEditing(false);
   };
@@ -95,11 +100,9 @@ export function UserMessage({ message, onEdit }: UserMessageProps) {
                 <RiFileCopyLine />
               )}
             </Button>
-            {onEdit && (
-              <Button variant="ghost" size="icon" onClick={handleEdit}>
-                <RiEditLine />
-              </Button>
-            )}
+            <Button variant="ghost" size="icon" onClick={handleEdit}>
+              <RiEditLine />
+            </Button>
           </div>
         </div>
       )}
