@@ -6,7 +6,10 @@ import {
   RiThumbUpLine,
 } from '@remixicon/react';
 import { useState } from 'react';
+import 'highlight.js/styles/github.css';
 import Markdown from 'react-markdown';
+import rehypeHighlight from 'rehype-highlight';
+import remarkGfm from 'remark-gfm';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -44,7 +47,9 @@ export function AiMessage({ message, isLast }: AiMessageProps) {
   return (
     <div className="group/ai-msg">
       <div className="ai-markdown">
-        <Markdown>{message.content}</Markdown>
+        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+          {message.content}
+        </Markdown>
       </div>
       <div
         className={cn(
@@ -106,7 +111,9 @@ export function StreamingMessage({
   return (
     <div>
       <div className="ai-markdown">
-        <Markdown>{content}</Markdown>
+        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+          {content}
+        </Markdown>
         {isStreaming && (
           <span className="ml-0.5 inline-block h-4 w-2 animate-pulse bg-purple-500" />
         )}

@@ -36,5 +36,23 @@
       margin-top: 1em;
       margin-bottom: 1em;
     }
+
+    pre {
+      background-color: #f0f4f9;
+      border-radius: 16px;
+      margin-bottom: 1em;
+      padding: 16px 20px;
+    }
+
+    code {
+      background-color: #f0f4f9;
+      padding: 0;
+      color: #333;
+    }
+
+    pre code.hljs {
+      background-color: #f0f4f9;
+      padding: 0;
+    }
   }
 }
