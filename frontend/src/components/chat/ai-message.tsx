@@ -10,6 +10,7 @@ import Markdown from 'react-markdown';
 
 import { Button } from '@/components/ui/button';
 import { cn, copyToClipboard } from '@/lib/utils';
+import { useRetryMessage } from '@/queries/use-messages';
 
 const aiProseClass =
   'prose prose-sm prose-headings:my-3 prose-ol:my-2 prose-p:my-2 prose-pre:my-2 prose-ul:my-2 min-w-0 max-w-none prose-code:rounded prose-pre:rounded-lg prose-code:bg-gray-100 prose-pre:bg-gray-900 prose-pre:p-4 prose-code:px-1 prose-code:py-0.5 pt-1 prose-code:text-sm prose-pre:text-gray-100 text-base text-gray-800 leading-relaxed';
@@ -20,6 +21,7 @@ interface AiMessageProps {
 
 export function AiMessage({ message }: AiMessageProps) {
   const [copied, setCopied] = useState(false);
+  const retryMessage = useRetryMessage();
 
   const handleCopy = async () => {
     const success = await copyToClipboard(message.content ?? '');
@@ -27,6 +29,13 @@ export function AiMessage({ message }: AiMessageProps) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     }
+  };
+
+  const handleRetry = () => {
+    retryMessage.mutate({
+      conversation_id: message.conversation_id,
+      message_id: message.id,
+    });
   };
 
   return (
@@ -46,7 +55,7 @@ export function AiMessage({ message }: AiMessageProps) {
             <RiFileCopyLine />
           )}
         </Button>
-        <Button variant="ghost" size="icon">
+        <Button variant="ghost" size="icon" onClick={handleRetry}>
           <RiLoopLeftLine />
         </Button>
         <Button variant="ghost" size="icon">
