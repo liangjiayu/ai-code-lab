@@ -120,6 +120,15 @@ declare namespace API {
     user_id: number;
   };
 
+  type EditCompletionRequest = {
+    /** Conversation Id 所属会话 ID */
+    conversation_id: string;
+    /** Message Id 要编辑的用户消息 ID */
+    message_id: string;
+    /** Prompt 新的消息内容 */
+    prompt: string;
+  };
+
   type GenerateTitleRequest = {
     /** Conversation Id 所属会话 ID */
     conversation_id: string;
@@ -221,6 +230,13 @@ declare namespace API {
     page: number;
     /** Page Size 每页条数 */
     page_size: number;
+  };
+
+  type RetryCompletionRequest = {
+    /** Conversation Id 所属会话 ID */
+    conversation_id: string;
+    /** Message Id 要重新生成的 AI 消息 ID */
+    message_id: string;
   };
 
   type updateConversationParams = {
