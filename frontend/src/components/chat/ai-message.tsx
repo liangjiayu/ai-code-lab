@@ -17,9 +17,10 @@ const aiProseClass =
 
 interface AiMessageProps {
   message: API.MessageOut;
+  isLast?: boolean;
 }
 
-export function AiMessage({ message }: AiMessageProps) {
+export function AiMessage({ message, isLast }: AiMessageProps) {
   const [copied, setCopied] = useState(false);
   const retryMessage = useRetryMessage();
 
@@ -55,9 +56,11 @@ export function AiMessage({ message }: AiMessageProps) {
             <RiFileCopyLine />
           )}
         </Button>
-        <Button variant="ghost" size="icon" onClick={handleRetry}>
-          <RiLoopLeftLine />
-        </Button>
+        {isLast && (
+          <Button variant="ghost" size="icon" onClick={handleRetry}>
+            <RiLoopLeftLine />
+          </Button>
+        )}
         <Button variant="ghost" size="icon">
           <RiThumbUpLine />
         </Button>

@@ -7,9 +7,10 @@ import { useEditMessage } from '@/queries/use-messages';
 
 interface UserMessageProps {
   message: API.MessageOut;
+  isLast?: boolean;
 }
 
-export function UserMessage({ message }: UserMessageProps) {
+export function UserMessage({ message, isLast }: UserMessageProps) {
   const [copied, setCopied] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(message.content ?? '');
@@ -100,9 +101,11 @@ export function UserMessage({ message }: UserMessageProps) {
                 <RiFileCopyLine />
               )}
             </Button>
-            <Button variant="ghost" size="icon" onClick={handleEdit}>
-              <RiEditLine />
-            </Button>
+            {isLast && (
+              <Button variant="ghost" size="icon" onClick={handleEdit}>
+                <RiEditLine />
+              </Button>
+            )}
           </div>
         </div>
       )}

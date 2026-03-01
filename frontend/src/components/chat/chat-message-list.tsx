@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useChatStore } from '@/stores/chat-store';
 import { AiMessage, StreamingMessage } from './ai-message';
 import { LoadingIndicator } from './loading-indicator';
@@ -16,6 +16,15 @@ export function ChatMessageList({
   const streamingContent = useChatStore((s) => s.streamingContent);
   const isStreaming = useChatStore((s) => s.isStreaming);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const lastUserMessageId = useMemo(
+    () => [...messages].reverse().find((m) => m.role === 'user')?.id,
+    [messages],
+  );
+  const lastAiMessageId = useMemo(
+    () => [...messages].reverse().find((m) => m.role === 'assistant')?.id,
+    [messages],
+  );
 
   useEffect(() => {
     if (streamingContent || isAiLoading) {
@@ -39,9 +48,17 @@ export function ChatMessageList({
         <div className="mx-auto max-w-3xl px-4 pt-1 pb-10">
           {messages.map((message) =>
             message.role === 'user' ? (
-              <UserMessage key={message.id} message={message} />
+              <UserMessage
+                key={message.id}
+                message={message}
+                isLast={message.id === lastUserMessageId}
+              />
             ) : (
-              <AiMessage key={message.id} message={message} />
+              <AiMessage
+                key={message.id}
+                message={message}
+                isLast={message.id === lastAiMessageId}
+              />
             ),
           )}
           {isAiLoading && !streamingContent && <LoadingIndicator />}
