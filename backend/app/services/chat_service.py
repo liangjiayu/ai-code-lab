@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.repositories.conversation_repository import ConversationRepository
 from app.repositories.message_repository import MessageRepository
-from app.schemas.chat import ChatRequest, EditCompletionRequest, GenerateTitleRequest
+from app.schemas.chat import ChatRequest, EditCompletionRequest, GenerateTitleRequest, RetryCompletionRequest
 from app.schemas.conversation import ConversationUpdate
 from app.schemas.message import MessageCreate, MessageRole, MessageStatus, MessageUpdate
 from app.services.conversation_service import get_conversation
@@ -130,6 +130,34 @@ async def edit_completion(db: AsyncSession, edit_in: EditCompletionRequest) -> A
 
 	# 7. 调用公共流式方法
 	async for chunk in _stream_completion(db, edit_in.conversation_id, messages, message.id):
+		yield chunk
+
+
+async def retry_completion(db: AsyncSession, retry_in: RetryCompletionRequest) -> AsyncGenerator[str, None]:
+	# 1. 验证会话存在
+	await get_conversation(db, retry_in.conversation_id)
+
+	# 2. 获取要重新生成的消息，校验 role=assistant
+	message = await MessageRepository.get_by_id(db, retry_in.message_id)
+	if not message:
+		raise HTTPException(status_code=404, detail="消息不存在")
+	if message.role != MessageRole.assistant:
+		raise HTTPException(status_code=400, detail="只能重新生成 AI 消息")
+
+	# 3. 删除该消息及其后续所有消息
+	await MessageRepository.delete_message_and_after(db, retry_in.conversation_id, message.created_at)
+
+	# 4. 重新加载历史消息
+	history = await MessageRepository.get_list_by_conversation_id(db, retry_in.conversation_id)
+
+	# 5. 获取最后一条用户消息作为 parent
+	parent_message = history[-1] if history else None
+	parent_message_id = parent_message.id if parent_message else None
+
+	# 6. 组装 messages，调用 _stream_completion
+	messages = [{"role": msg.role, "content": msg.content} for msg in history]
+
+	async for chunk in _stream_completion(db, retry_in.conversation_id, messages, parent_message_id):
 		yield chunk
 
 

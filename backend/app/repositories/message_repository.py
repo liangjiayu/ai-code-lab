@@ -25,3 +25,11 @@ class MessageRepository(BaseRepository):
 			delete(Message).where(Message.conversation_id == conversation_id).where(Message.created_at > created_at)
 		)
 		await db.commit()
+
+	@classmethod
+	async def delete_message_and_after(cls, db: AsyncSession, conversation_id: uuid.UUID, created_at: datetime):
+		"""删除同会话中指定时间及之后的所有消息（含自身）"""
+		await db.execute(
+			delete(Message).where(Message.conversation_id == conversation_id).where(Message.created_at >= created_at)
+		)
+		await db.commit()
