@@ -2,6 +2,11 @@ import { RiCheckLine, RiEditLine, RiFileCopyLine } from '@remixicon/react';
 import { useEffect, useRef, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn, copyToClipboard } from '@/lib/utils';
 import { useEditMessage } from '@/queries/use-messages';
 
@@ -94,17 +99,27 @@ export function UserMessage({ message, isLast }: UserMessageProps) {
               'mt-1 flex justify-end gap-1 opacity-0 transition-opacity group-hover/user-msg:opacity-100',
             )}
           >
-            <Button variant="ghost" size="icon" onClick={handleCopy}>
-              {copied ? (
-                <RiCheckLine className="text-green-500" />
-              ) : (
-                <RiFileCopyLine />
-              )}
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" onClick={handleCopy}>
+                  {copied ? (
+                    <RiCheckLine className="text-green-500" />
+                  ) : (
+                    <RiFileCopyLine />
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>复制</TooltipContent>
+            </Tooltip>
             {isLast && (
-              <Button variant="ghost" size="icon" onClick={handleEdit}>
-                <RiEditLine />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon" onClick={handleEdit}>
+                    <RiEditLine />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>编辑</TooltipContent>
+              </Tooltip>
             )}
           </div>
         </div>

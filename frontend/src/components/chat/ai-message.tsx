@@ -9,6 +9,11 @@ import { useState } from 'react';
 import Markdown from 'react-markdown';
 
 import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { cn, copyToClipboard } from '@/lib/utils';
 import { useRetryMessage } from '@/queries/use-messages';
 
@@ -49,24 +54,44 @@ export function AiMessage({ message, isLast }: AiMessageProps) {
           'mt-1 flex gap-1 opacity-0 transition-opacity group-hover/ai-msg:opacity-100',
         )}
       >
-        <Button variant="ghost" size="icon" onClick={handleCopy}>
-          {copied ? (
-            <RiCheckLine className="text-green-500" />
-          ) : (
-            <RiFileCopyLine />
-          )}
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="icon" onClick={handleCopy}>
+              {copied ? (
+                <RiCheckLine className="text-green-500" />
+              ) : (
+                <RiFileCopyLine />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>复制</TooltipContent>
+        </Tooltip>
         {isLast && (
-          <Button variant="ghost" size="icon" onClick={handleRetry}>
-            <RiLoopLeftLine />
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" onClick={handleRetry}>
+                <RiLoopLeftLine />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>重新生成</TooltipContent>
+          </Tooltip>
         )}
-        <Button variant="ghost" size="icon">
-          <RiThumbUpLine />
-        </Button>
-        <Button variant="ghost" size="icon">
-          <RiThumbDownLine />
-        </Button>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <RiThumbUpLine />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>赞同</TooltipContent>
+        </Tooltip>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <RiThumbDownLine />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>反对</TooltipContent>
+        </Tooltip>
       </div>
     </div>
   );

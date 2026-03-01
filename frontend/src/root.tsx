@@ -9,6 +9,7 @@ import {
   ScrollRestoration,
 } from 'react-router';
 
+import { TooltipProvider } from '@/components/ui/tooltip';
 import type { Route } from './+types/root';
 import './styles/index.css';
 
@@ -55,7 +56,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Outlet />
+      <TooltipProvider>
+        <Outlet />
+      </TooltipProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
