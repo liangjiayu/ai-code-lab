@@ -1,0 +1,46 @@
+.ai-markdown {
+  max-width: none;
+}
+
+.ai-markdown h1 {
+  font-size: 1.375em;
+  font-weight: 700;
+}
+
+.ai-markdown h2 {
+  font-size: 1.25em;
+  margin: 1.75em 0 0.5em;
+}
+
+.ai-markdown h3,
+.ai-markdown h4,
+.ai-markdown h5,
+.ai-markdown h6 {
+  font-size: 1em;
+}
+
+.ai-markdown hr {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.ai-markdown pre {
+  background-color: #f0f4f9;
+  border-radius: 16px;
+  margin-bottom: 1em;
+  padding: 0;
+}
+
+.ai-markdown pre code.hljs {
+  display: block;
+  background-color: #f0f4f9;
+  color: #333;
+  padding: 16px;
+}
+
+.ai-markdown pre code {
+  background-color: #f0f4f9;
+  display: block;
+  color: #333;
+  padding: 16px;
+}

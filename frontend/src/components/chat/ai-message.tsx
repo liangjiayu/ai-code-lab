@@ -6,11 +6,8 @@ import {
   RiThumbUpLine,
 } from '@remixicon/react';
 import { useState } from 'react';
-import 'highlight.js/styles/github.css';
-import Markdown from 'react-markdown';
-import rehypeHighlight from 'rehype-highlight';
-import remarkGfm from 'remark-gfm';
 
+import { MarkdownRender } from '@/components/markdown';
 import { Button } from '@/components/ui/button';
 import {
   Tooltip,
@@ -46,11 +43,7 @@ export function AiMessage({ message, isLast }: AiMessageProps) {
 
   return (
     <div className="group/ai-msg">
-      <div className="ai-markdown">
-        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
-          {message.content}
-        </Markdown>
-      </div>
+      <MarkdownRender content={message.content ?? ''} />
       <div
         className={cn(
           'mt-1 flex gap-1 opacity-0 transition-opacity group-hover/ai-msg:opacity-100',
@@ -110,14 +103,10 @@ export function StreamingMessage({
 }: StreamingMessageProps) {
   return (
     <div>
-      <div className="ai-markdown">
-        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
-          {content}
-        </Markdown>
-        {isStreaming && (
-          <span className="ml-0.5 inline-block h-4 w-2 animate-pulse bg-purple-500" />
-        )}
-      </div>
+      <MarkdownRender content={content} />
+      {isStreaming && (
+        <span className="ml-0.5 inline-block h-4 w-2 animate-pulse bg-purple-500" />
+      )}
     </div>
   );
 }
