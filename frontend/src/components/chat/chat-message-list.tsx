@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useChatStore } from '@/stores/chat-store';
 import { AiMessage, StreamingMessage } from './ai-message';
 import { LoadingIndicator } from './loading-indicator';
@@ -25,14 +25,6 @@ export function ChatMessageList({
     () => [...messages].reverse().find((m) => m.role === 'assistant')?.id,
     [messages],
   );
-
-  useEffect(() => {
-    if (streamingContent || isAiLoading) {
-      scrollRef.current?.scrollTo({
-        top: scrollRef.current.scrollHeight,
-      });
-    }
-  }, [streamingContent, isAiLoading]);
 
   if (messages.length === 0) {
     return (
