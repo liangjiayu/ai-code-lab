@@ -18,10 +18,10 @@ repos:
         types: [python]
         files: ^backend/
 
-      # 前端: Biome
+      # 前端: Biome (自动修复)
       - id: biome-check
         name: "🎨 Biome Check"
-        entry: ./frontend/node_modules/.bin/biome check --write --no-errors-on-unmatched
+        entry: bash -c './frontend/node_modules/.bin/biome check --write --no-errors-on-unmatched "$@" && git add "$@"' --
         require_serial: true
         language: system
         files: ^frontend/
