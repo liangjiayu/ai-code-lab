@@ -64,19 +64,18 @@ async def _stream_completion(
 						yield f"data: {json.dumps({'content': content}, ensure_ascii=False)}\n\n"
 	except httpx.HTTPStatusError as e:
 		error_msg = f"DeepSeek API 请求失败: {e.response.status_code}"
-		yield f"data: {json.dumps({'error': error_msg}, ensure_ascii=False)}\n\n"
+		yield f"event: error\ndata: {json.dumps({'error': error_msg}, ensure_ascii=False)}\n\n"
 		await MessageRepository.update(db, ai_message, MessageUpdate(content=error_msg, status=MessageStatus.error))
 		return
 	except httpx.RequestError:
 		error_msg = "DeepSeek API 连接失败"
-		yield f"data: {json.dumps({'error': error_msg}, ensure_ascii=False)}\n\n"
+		yield f"event: error\ndata: {json.dumps({'error': error_msg}, ensure_ascii=False)}\n\n"
 		await MessageRepository.update(db, ai_message, MessageUpdate(content=error_msg, status=MessageStatus.error))
 		return
 
 	# 流结束，更新 AI 消息内容和状态
 	await MessageRepository.update(db, ai_message, MessageUpdate(content=full_content, status=MessageStatus.success))
-	yield f"data: {json.dumps({'message_id': str(ai_message.id)}, ensure_ascii=False)}\n\n"
-	yield "data: [DONE]\n\n"
+	yield f"event: done\ndata: {json.dumps({'message_id': str(ai_message.id)}, ensure_ascii=False)}\n\n"
 
 
 async def chat(db: AsyncSession, chat_in: ChatRequest) -> AsyncGenerator[str, None]:
