@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-interface ChatStore {
+type ChatStore = {
   isSidebarOpen: boolean;
   toggleSidebar: () => void;
 
@@ -13,7 +13,7 @@ interface ChatStore {
   startStreaming: () => void;
   stopStreaming: () => void;
   resetStreaming: () => void;
-}
+};
 
 export const useChatStore = create<ChatStore>((set) => ({
   isSidebarOpen: true,

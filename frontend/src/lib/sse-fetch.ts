@@ -1,8 +1,8 @@
-interface FetchSSECallbacks {
+type FetchSSECallbacks = {
   onContent: (chunk: string) => void;
   onError: (error: string) => void;
   onComplete: (messageId: string) => void;
-}
+};
 
 export async function fetchSSE(
   url: string,

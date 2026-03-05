@@ -10,10 +10,10 @@ import {
 import { cn, copyToClipboard } from '@/lib/utils';
 import { useEditMessage } from '@/queries/use-messages';
 
-interface UserMessageProps {
+type UserMessageProps = {
   message: API.MessageOut;
   isLast?: boolean;
-}
+};
 
 export function UserMessage({ message, isLast }: UserMessageProps) {
   const [copied, setCopied] = useState(false);

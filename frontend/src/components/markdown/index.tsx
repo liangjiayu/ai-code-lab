@@ -10,11 +10,11 @@ import { copyToClipboard } from '@/lib/utils';
 
 import './index.css';
 
-interface AstNode {
+type AstNode = {
   type: string;
   children?: AstNode[];
   properties?: { className?: string[] };
-}
+};
 
 function CodeBlockHeader({
   language,
@@ -84,9 +84,9 @@ const markdownComponents: Components = {
   pre: PreBlock,
 };
 
-interface MarkdownRenderProps {
+type MarkdownRenderProps = {
   content: string;
-}
+};
 
 export function MarkdownRender({ content }: MarkdownRenderProps) {
   return (

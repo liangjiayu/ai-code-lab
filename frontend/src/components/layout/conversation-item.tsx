@@ -32,9 +32,9 @@ import {
   useUpdateConversation,
 } from '@/queries/use-conversations';
 
-interface ConversationItemProps {
+type ConversationItemProps = {
   conversation: API.ConversationOut;
-}
+};
 
 export function ConversationItem({ conversation }: ConversationItemProps) {
   const navigate = useNavigate();

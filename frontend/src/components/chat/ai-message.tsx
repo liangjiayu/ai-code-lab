@@ -17,10 +17,10 @@ import {
 import { cn, copyToClipboard } from '@/lib/utils';
 import { useRetryMessage } from '@/queries/use-messages';
 
-interface AiMessageProps {
+type AiMessageProps = {
   message: API.MessageOut;
   isLast?: boolean;
-}
+};
 
 export function AiMessage({ message, isLast }: AiMessageProps) {
   const [copied, setCopied] = useState(false);
@@ -92,10 +92,10 @@ export function AiMessage({ message, isLast }: AiMessageProps) {
   );
 }
 
-interface StreamingMessageProps {
+type StreamingMessageProps = {
   content: string;
   isStreaming: boolean;
-}
+};
 
 export function StreamingMessage({
   content,

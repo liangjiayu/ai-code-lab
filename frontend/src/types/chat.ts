@@ -1,19 +1,19 @@
-export interface Conversation {
+export type Conversation = {
   id: string;
   title: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
-export interface ConversationGroup {
+export type ConversationGroup = {
   label: string;
   conversations: Conversation[];
-}
+};
 
-export interface Message {
+export type Message = {
   id: string;
   conversationId: string;
   role: 'user' | 'assistant';
   content: string;
   createdAt: Date;
-}
+};

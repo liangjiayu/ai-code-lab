@@ -4,10 +4,10 @@ import { AiMessage, StreamingMessage } from './ai-message';
 import { LoadingIndicator } from './loading-indicator';
 import { UserMessage } from './user-message';
 
-interface ChatMessageListProps {
+type ChatMessageListProps = {
   messages: API.MessageOut[];
   isAiLoading?: boolean;
-}
+};
 
 export function ChatMessageList({
   messages,
