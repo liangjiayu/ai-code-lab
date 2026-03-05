@@ -1,9 +1,11 @@
-import { useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { MarkdownRender } from '@/components/markdown';
 import { useChatStore } from '@/stores/chat-store';
 import { AiMessage } from './ai-message';
 import { LoadingIndicator } from './loading-indicator';
 import { UserMessage } from './user-message';
+
+const SCROLL_THRESHOLD = 100;
 
 type ChatMessageListProps = {
   messages: API.MessageOut[];
@@ -13,6 +15,39 @@ export function ChatMessageList({ messages }: ChatMessageListProps) {
   const streamingContent = useChatStore((s) => s.streamingContent);
   const isStreaming = useChatStore((s) => s.isStreaming);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isUserScrollingRef = useRef(false);
+
+  const isNearBottom = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return true;
+    return el.scrollHeight - el.scrollTop - el.clientHeight < SCROLL_THRESHOLD;
+  }, []);
+
+  const scrollToBottom = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, []);
+
+  const handleScroll = useCallback(() => {
+    isUserScrollingRef.current = !isNearBottom();
+  }, [isNearBottom]);
+
+  // 消息更新或流式内容变化时自动滚动到底部
+  const messageCount = messages.length;
+  const contentLength = streamingContent.length;
+  useEffect(() => {
+    if (messageCount + contentLength > 0 && !isUserScrollingRef.current) {
+      scrollToBottom();
+    }
+  }, [messageCount, contentLength, scrollToBottom]);
+
+  // 流式输出开始时重置滚动状态
+  useEffect(() => {
+    if (isStreaming) {
+      isUserScrollingRef.current = false;
+    }
+  }, [isStreaming]);
 
   const lastUserMessageId = useMemo(
     () => [...messages].reverse().find((m) => m.role === 'user')?.id,
@@ -33,7 +68,11 @@ export function ChatMessageList({ messages }: ChatMessageListProps) {
 
   return (
     <div className="relative flex-1 overflow-hidden">
-      <div ref={scrollRef} className="h-full overflow-y-auto">
+      <div
+        ref={scrollRef}
+        className="h-full overflow-y-auto"
+        onScroll={handleScroll}
+      >
         <div className="mx-auto max-w-3xl px-4 pt-1 pb-10">
           {messages.map((message) =>
             message.role === 'user' ? (
