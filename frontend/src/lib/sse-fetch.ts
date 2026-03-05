@@ -27,6 +27,7 @@ export async function fetchSSE(
   const reader = response.body.getReader();
   const decoder = new TextDecoder();
   let buffer = '';
+  let currentEvent = '';
 
   while (true) {
     const { done, value } = await reader.read();
@@ -39,19 +40,31 @@ export async function fetchSSE(
 
     for (const line of lines) {
       const trimmed = line.trim();
-      if (!trimmed || !trimmed.startsWith('data: ')) continue;
+      if (!trimmed) {
+        currentEvent = '';
+        continue;
+      }
 
+      if (trimmed.startsWith('event: ')) {
+        currentEvent = trimmed.slice(7);
+        continue;
+      }
+
+      if (!trimmed.startsWith('data: ')) continue;
       const payload = trimmed.slice(6);
-      if (payload === '[DONE]') return;
 
       try {
         const data = JSON.parse(payload);
+
+        if (currentEvent === 'done') {
+          callbacks.onComplete(data.message_id);
+          return;
+        }
+
         if (data.error) {
           callbacks.onError(data.error);
         } else if (data.content) {
           callbacks.onContent(data.content);
-        } else if (data.message_id) {
-          callbacks.onComplete(data.message_id);
         }
       } catch {
         // 忽略无法解析的行

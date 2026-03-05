@@ -50,7 +50,8 @@ export function useEditMessage() {
           onError: (error) => {
             throw new Error(error);
           },
-          onComplete: () => {
+          onComplete: (messageId) => {
+            useChatStore.getState().setStreamingMessageId(messageId);
             useChatStore.getState().stopStreaming();
           },
         },
@@ -90,11 +91,11 @@ export function useEditMessage() {
       useChatStore.getState().resetStreaming();
     },
     onSuccess: (_data, variables) => {
-      const { streamingContent } = useChatStore.getState();
+      const { streamingContent, streamingMessageId } = useChatStore.getState();
 
       if (streamingContent) {
         const assistantMessage: API.MessageOut = {
-          id: `assistant-${variables.message_id}`,
+          id: streamingMessageId,
           conversation_id: variables.conversation_id,
           role: 'assistant' as API.MessageRole,
           content: streamingContent,
@@ -137,7 +138,8 @@ export function useRetryMessage() {
           onError: (error) => {
             throw new Error(error);
           },
-          onComplete: () => {
+          onComplete: (messageId) => {
+            useChatStore.getState().setStreamingMessageId(messageId);
             useChatStore.getState().stopStreaming();
           },
         },
@@ -176,11 +178,11 @@ export function useRetryMessage() {
       useChatStore.getState().resetStreaming();
     },
     onSuccess: (_data, variables) => {
-      const { streamingContent } = useChatStore.getState();
+      const { streamingContent, streamingMessageId } = useChatStore.getState();
 
       if (streamingContent) {
         const assistantMessage: API.MessageOut = {
-          id: `assistant-retry-${variables.message_id}`,
+          id: streamingMessageId,
           conversation_id: variables.conversation_id,
           role: 'assistant' as API.MessageRole,
           content: streamingContent,
@@ -225,7 +227,8 @@ export function useSendMessage() {
           onError: (error) => {
             throw new Error(error);
           },
-          onComplete: () => {
+          onComplete: (messageId) => {
+            useChatStore.getState().setStreamingMessageId(messageId);
             useChatStore.getState().stopStreaming();
           },
         },
@@ -267,12 +270,12 @@ export function useSendMessage() {
       useChatStore.getState().resetStreaming();
     },
     onSuccess: (_data, variables) => {
-      const { streamingContent } = useChatStore.getState();
+      const { streamingContent, streamingMessageId } = useChatStore.getState();
 
       // 将流式内容作为 assistant 消息写入 React Query 缓存
       if (streamingContent) {
         const assistantMessage: API.MessageOut = {
-          id: `assistant-${variables.parent_message_id}`,
+          id: streamingMessageId,
           conversation_id: variables.conversation_id,
           role: 'assistant' as API.MessageRole,
           content: streamingContent,
