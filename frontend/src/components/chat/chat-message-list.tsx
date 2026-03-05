@@ -1,18 +1,15 @@
 import { useMemo, useRef } from 'react';
+import { MarkdownRender } from '@/components/markdown';
 import { useChatStore } from '@/stores/chat-store';
-import { AiMessage, StreamingMessage } from './ai-message';
+import { AiMessage } from './ai-message';
 import { LoadingIndicator } from './loading-indicator';
 import { UserMessage } from './user-message';
 
 type ChatMessageListProps = {
   messages: API.MessageOut[];
-  isAiLoading?: boolean;
 };
 
-export function ChatMessageList({
-  messages,
-  isAiLoading,
-}: ChatMessageListProps) {
+export function ChatMessageList({ messages }: ChatMessageListProps) {
   const streamingContent = useChatStore((s) => s.streamingContent);
   const isStreaming = useChatStore((s) => s.isStreaming);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -53,13 +50,8 @@ export function ChatMessageList({
               />
             ),
           )}
-          {isAiLoading && !streamingContent && <LoadingIndicator />}
-          {streamingContent && (
-            <StreamingMessage
-              content={streamingContent}
-              isStreaming={isStreaming}
-            />
-          )}
+          {streamingContent && <MarkdownRender content={streamingContent} />}
+          {isStreaming && <LoadingIndicator />}
         </div>
       </div>
       <div className="pointer-events-none absolute right-0 bottom-0 left-0 h-12 bg-linear-to-t from-background to-transparent" />

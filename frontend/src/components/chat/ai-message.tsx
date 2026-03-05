@@ -91,22 +91,3 @@ export function AiMessage({ message, isLast }: AiMessageProps) {
     </div>
   );
 }
-
-type StreamingMessageProps = {
-  content: string;
-  isStreaming: boolean;
-};
-
-export function StreamingMessage({
-  content,
-  isStreaming,
-}: StreamingMessageProps) {
-  return (
-    <div>
-      <MarkdownRender content={content} />
-      {isStreaming && (
-        <span className="ml-0.5 inline-block h-4 w-2 animate-pulse bg-purple-500" />
-      )}
-    </div>
-  );
-}
