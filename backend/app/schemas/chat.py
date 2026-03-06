@@ -20,6 +20,11 @@ class RetryCompletionRequest(BaseModel):
 	message_id: uuid.UUID = Field(description="要重新生成的 AI 消息 ID")
 
 
+class StopResponseRequest(BaseModel):
+	conversation_id: uuid.UUID = Field(description="所属会话 ID")
+	message_id: uuid.UUID = Field(description="要终止的 AI 消息 ID")
+
+
 class GenerateTitleRequest(BaseModel):
 	conversation_id: uuid.UUID = Field(description="所属会话 ID")
 	message: str = Field(description="用于生成标题的消息内容")

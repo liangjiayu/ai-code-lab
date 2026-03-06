@@ -8,10 +8,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import settings
 from app.repositories.conversation_repository import ConversationRepository
 from app.repositories.message_repository import MessageRepository
-from app.schemas.chat import ChatRequest, EditCompletionRequest, GenerateTitleRequest, RetryCompletionRequest
+from app.schemas.chat import (
+	ChatRequest,
+	EditCompletionRequest,
+	GenerateTitleRequest,
+	RetryCompletionRequest,
+	StopResponseRequest,
+)
 from app.schemas.conversation import ConversationUpdate
 from app.schemas.message import MessageCreate, MessageRole, MessageStatus, MessageUpdate
 from app.services.conversation_service import get_conversation
+from app.services.stream_manager import stream_manager
 
 
 async def _stream_completion(
@@ -30,6 +37,9 @@ async def _stream_completion(
 		status=MessageStatus.processing,
 	)
 	ai_message = await MessageRepository.create(db, ai_message_in)
+
+	# 注册流并获取取消事件
+	cancel_event = stream_manager.register(conversation_id)
 
 	# 流式调用 DeepSeek API
 	full_content = ""
@@ -51,6 +61,8 @@ async def _stream_completion(
 			) as response:
 				response.raise_for_status()
 				async for line in response.aiter_lines():
+					if cancel_event.is_set():
+						break
 					if not line.startswith("data: "):
 						continue
 					data = line[6:]
@@ -71,6 +83,16 @@ async def _stream_completion(
 		error_msg = "DeepSeek API 连接失败"
 		yield f"event: error\ndata: {json.dumps({'error': error_msg}, ensure_ascii=False)}\n\n"
 		await MessageRepository.update(db, ai_message, MessageUpdate(content=error_msg, status=MessageStatus.error))
+		return
+	finally:
+		stream_manager.unregister(conversation_id)
+
+	# 判断是否被取消
+	if cancel_event.is_set():
+		await MessageRepository.update(
+			db, ai_message, MessageUpdate(content=full_content, status=MessageStatus.stopped)
+		)
+		yield f"event: stopped\ndata: {json.dumps({'message_id': str(ai_message.id)}, ensure_ascii=False)}\n\n"
 		return
 
 	# 流结束，更新 AI 消息内容和状态
@@ -158,6 +180,22 @@ async def retry_completion(db: AsyncSession, retry_in: RetryCompletionRequest) -
 
 	async for chunk in _stream_completion(db, retry_in.conversation_id, messages, parent_message_id):
 		yield chunk
+
+
+async def stop_response(db: AsyncSession, req: StopResponseRequest):
+	"""终止正在进行的 SSE 流式响应"""
+	# 1. 验证会话存在
+	await get_conversation(db, req.conversation_id)
+
+	# 2. 取消活跃流
+	cancelled = stream_manager.cancel(req.conversation_id)
+	if not cancelled:
+		raise HTTPException(status_code=400, detail="该会话没有正在进行的响应")
+
+	# 3. 更新消息状态
+	message = await MessageRepository.get_by_id(db, req.message_id)
+	if message and message.status == MessageStatus.processing:
+		await MessageRepository.update(db, message, MessageUpdate(status=MessageStatus.stopped))
 
 
 async def generate_title(db: AsyncSession, req: GenerateTitleRequest) -> str:

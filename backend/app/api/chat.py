@@ -2,7 +2,13 @@ from fastapi import APIRouter
 from starlette.responses import StreamingResponse
 
 from app.core.database import DB
-from app.schemas.chat import ChatRequest, EditCompletionRequest, GenerateTitleRequest, RetryCompletionRequest
+from app.schemas.chat import (
+	ChatRequest,
+	EditCompletionRequest,
+	GenerateTitleRequest,
+	RetryCompletionRequest,
+	StopResponseRequest,
+)
 from app.schemas.response import ApiResponse
 from app.services import chat_service
 
@@ -43,6 +49,12 @@ async def retry_completion(retry_in: RetryCompletionRequest, db: DB):
 			"Connection": "keep-alive",
 		},
 	)
+
+
+@router.post("/stop_response")
+async def stop_response(req: StopResponseRequest, db: DB):
+	await chat_service.stop_response(db, req)
+	return ApiResponse.ok()
 
 
 @router.post("/generate_title")

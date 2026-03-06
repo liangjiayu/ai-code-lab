@@ -15,6 +15,7 @@ class MessageStatus(StrEnum):
 	processing = "processing"
 	success = "success"
 	error = "error"
+	stopped = "stopped"
 
 
 class MessageBase(BaseModel):
