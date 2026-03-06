@@ -1,4 +1,5 @@
 type FetchSSECallbacks = {
+  onStart: (messageId: string) => void;
   onContent: (chunk: string) => void;
   onError: (error: string) => void;
   onComplete: (messageId: string) => void;
@@ -55,6 +56,11 @@ export async function fetchSSE(
 
       try {
         const data = JSON.parse(payload);
+
+        if (currentEvent === 'start') {
+          callbacks.onStart(data.message_id);
+          continue;
+        }
 
         if (currentEvent === 'done') {
           callbacks.onComplete(data.message_id);

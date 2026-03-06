@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchSSE } from '@/lib/sse-fetch';
+import { stopResponse } from '@/services/api/chat';
 import { createMessage, getMessages } from '@/services/api/messages';
 import { useChatStore } from '@/stores/chat-store';
 
@@ -24,6 +25,31 @@ export function useCreateMessage() {
   });
 }
 
+function saveStoppedMessage(
+  queryClient: ReturnType<typeof useQueryClient>,
+  conversationId: string,
+) {
+  const { streamingContent, streamingMessageId } = useChatStore.getState();
+
+  if (streamingContent) {
+    const assistantMessage: API.MessageOut = {
+      id: streamingMessageId,
+      conversation_id: conversationId,
+      role: 'assistant' as API.MessageRole,
+      content: streamingContent,
+      status: 'stopped' as API.MessageStatus,
+      created_at: new Date().toISOString(),
+    };
+
+    queryClient.setQueryData<API.MessageOut[]>(
+      ['messages', conversationId],
+      (old) => [...(old ?? []), assistantMessage],
+    );
+  }
+
+  useChatStore.getState().resetStreaming();
+}
+
 export function useEditMessage() {
   const queryClient = useQueryClient();
 
@@ -44,17 +70,20 @@ export function useEditMessage() {
           prompt: params.prompt,
         },
         {
+          onStart: (messageId) => {
+            useChatStore.getState().setStreamingMessageId(messageId);
+          },
           onContent: (chunk) => {
             useChatStore.getState().appendStreamingContent(chunk);
           },
           onError: (error) => {
             throw new Error(error);
           },
-          onComplete: (messageId) => {
-            useChatStore.getState().setStreamingMessageId(messageId);
+          onComplete: () => {
             useChatStore.getState().stopStreaming();
           },
         },
+        store.abortController?.signal,
       );
     },
     onMutate: async (variables) => {
@@ -81,7 +110,11 @@ export function useEditMessage() {
 
       return { previousData };
     },
-    onError: (_error, variables, context) => {
+    onError: (error, variables, context) => {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        saveStoppedMessage(queryClient, variables.conversation_id);
+        return;
+      }
       if (context?.previousData) {
         queryClient.setQueryData(
           ['messages', variables.conversation_id],
@@ -132,17 +165,20 @@ export function useRetryMessage() {
           message_id: params.message_id,
         },
         {
+          onStart: (messageId) => {
+            useChatStore.getState().setStreamingMessageId(messageId);
+          },
           onContent: (chunk) => {
             useChatStore.getState().appendStreamingContent(chunk);
           },
           onError: (error) => {
             throw new Error(error);
           },
-          onComplete: (messageId) => {
-            useChatStore.getState().setStreamingMessageId(messageId);
+          onComplete: () => {
             useChatStore.getState().stopStreaming();
           },
         },
+        store.abortController?.signal,
       );
     },
     onMutate: async (variables) => {
@@ -168,7 +204,11 @@ export function useRetryMessage() {
 
       return { previousData };
     },
-    onError: (_error, variables, context) => {
+    onError: (error, variables, context) => {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        saveStoppedMessage(queryClient, variables.conversation_id);
+        return;
+      }
       if (context?.previousData) {
         queryClient.setQueryData(
           ['messages', variables.conversation_id],
@@ -221,17 +261,20 @@ export function useSendMessage() {
           parent_message_id: params.parent_message_id,
         },
         {
+          onStart: (messageId) => {
+            useChatStore.getState().setStreamingMessageId(messageId);
+          },
           onContent: (chunk) => {
             useChatStore.getState().appendStreamingContent(chunk);
           },
           onError: (error) => {
             throw new Error(error);
           },
-          onComplete: (messageId) => {
-            useChatStore.getState().setStreamingMessageId(messageId);
+          onComplete: () => {
             useChatStore.getState().stopStreaming();
           },
         },
+        store.abortController?.signal,
       );
     },
     onMutate: async (variables) => {
@@ -260,7 +303,11 @@ export function useSendMessage() {
 
       return { previousData };
     },
-    onError: (_error, variables, context) => {
+    onError: (error, variables, context) => {
+      if (error instanceof DOMException && error.name === 'AbortError') {
+        saveStoppedMessage(queryClient, variables.conversation_id);
+        return;
+      }
       if (context?.previousData) {
         queryClient.setQueryData(
           ['messages', variables.conversation_id],
@@ -290,6 +337,25 @@ export function useSendMessage() {
       }
 
       useChatStore.getState().resetStreaming();
+    },
+  });
+}
+
+export function useStopResponse() {
+  return useMutation({
+    mutationFn: async (params: {
+      conversation_id: string;
+      message_id: string;
+    }) => {
+      const store = useChatStore.getState();
+      // 先中止 SSE 连接
+      store.abortController?.abort();
+
+      // 调用后端终止接口
+      await stopResponse({
+        conversation_id: params.conversation_id,
+        message_id: params.message_id,
+      });
     },
   });
 }

@@ -10,6 +10,7 @@ type ChatStore = {
   streamingContent: string;
   streamingMessageId: string;
   isStreaming: boolean;
+  abortController: AbortController | null;
   appendStreamingContent: (chunk: string) => void;
   setStreamingMessageId: (id: string) => void;
   startStreaming: () => void;
@@ -27,12 +28,25 @@ export const useChatStore = create<ChatStore>((set) => ({
   streamingContent: '',
   streamingMessageId: '',
   isStreaming: false,
+  abortController: null,
   appendStreamingContent: (chunk) =>
     set((s) => ({ streamingContent: s.streamingContent + chunk })),
   setStreamingMessageId: (id) => set({ streamingMessageId: id }),
-  startStreaming: () =>
-    set({ isStreaming: true, streamingContent: '', streamingMessageId: '' }),
-  stopStreaming: () => set({ isStreaming: false }),
+  startStreaming: () => {
+    const abortController = new AbortController();
+    set({
+      isStreaming: true,
+      streamingContent: '',
+      streamingMessageId: '',
+      abortController,
+    });
+  },
+  stopStreaming: () => set({ isStreaming: false, abortController: null }),
   resetStreaming: () =>
-    set({ isStreaming: false, streamingContent: '', streamingMessageId: '' }),
+    set({
+      isStreaming: false,
+      streamingContent: '',
+      streamingMessageId: '',
+      abortController: null,
+    }),
 }));

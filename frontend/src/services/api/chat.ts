@@ -61,3 +61,18 @@ export async function retryCompletion(
     ...(options || {}),
   });
 }
+
+/** Stop Response POST /api/chat/stop_response */
+export async function stopResponse(
+  body: API.StopResponseRequest,
+  options?: { [key: string]: any }
+) {
+  return request<any>("/api/chat/stop_response", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    data: body,
+    ...(options || {}),
+  });
+}

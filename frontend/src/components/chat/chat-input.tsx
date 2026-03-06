@@ -3,6 +3,7 @@ import {
   RiAttachmentLine,
   RiGlobalLine,
   RiSparklingLine,
+  RiStopFill,
 } from '@remixicon/react';
 import { useCallback, useRef, useState } from 'react';
 import { useParams } from 'react-router';
@@ -11,7 +12,7 @@ import {
   useCreateConversation,
   useGenerateTitle,
 } from '@/queries/use-conversations';
-import { useSendMessage } from '@/queries/use-messages';
+import { useSendMessage, useStopResponse } from '@/queries/use-messages';
 import { useChatStore } from '@/stores/chat-store';
 
 export function ChatInput() {
@@ -25,7 +26,9 @@ export function ChatInput() {
   const createConversation = useCreateConversation();
   const sendMessage = useSendMessage();
   const generateTitle = useGenerateTitle();
+  const stopResponseMutation = useStopResponse();
   const isStreaming = useChatStore((s) => s.isStreaming);
+  const streamingMessageId = useChatStore((s) => s.streamingMessageId);
   const isSending =
     createConversation.isPending || sendMessage.isPending || isStreaming;
 
@@ -95,6 +98,14 @@ export function ChatInput() {
     }
   };
 
+  const handleStop = () => {
+    if (!id || !streamingMessageId) return;
+    stopResponseMutation.mutate({
+      conversation_id: id,
+      message_id: streamingMessageId,
+    });
+  };
+
   return (
     <div className="px-4">
       <div className="mx-auto max-w-3xl">
@@ -146,15 +157,26 @@ export function ChatInput() {
               >
                 <RiAttachmentLine size={20} />
               </button>
-              <button
-                type="button"
-                onClick={handleSend}
-                disabled={!inputValue.trim() || isSending}
-                className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white transition-colors hover:bg-blue-700 disabled:opacity-40"
-                aria-label="发送"
-              >
-                <RiArrowUpLine size={20} />
-              </button>
+              {isStreaming ? (
+                <button
+                  type="button"
+                  onClick={handleStop}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white transition-colors hover:bg-blue-700"
+                  aria-label="停止生成"
+                >
+                  <RiStopFill size={20} />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleSend}
+                  disabled={!inputValue.trim() || isSending}
+                  className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-white transition-colors hover:bg-blue-700 disabled:opacity-40"
+                  aria-label="发送"
+                >
+                  <RiArrowUpLine size={20} />
+                </button>
+              )}
             </div>
           </div>
         </div>

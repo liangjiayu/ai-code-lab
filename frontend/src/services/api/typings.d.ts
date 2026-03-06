@@ -199,7 +199,7 @@ declare namespace API {
 
   type MessageRole = "system" | "user" | "assistant";
 
-  type MessageStatus = "processing" | "success" | "error";
+  type MessageStatus = "processing" | "success" | "error" | "stopped";
 
   type MessageUpdate = {
     /** Content 消息内容 */
@@ -236,6 +236,13 @@ declare namespace API {
     /** Conversation Id 所属会话 ID */
     conversation_id: string;
     /** Message Id 要重新生成的 AI 消息 ID */
+    message_id: string;
+  };
+
+  type StopResponseRequest = {
+    /** Conversation Id 所属会话 ID */
+    conversation_id: string;
+    /** Message Id 要终止的 AI 消息 ID */
     message_id: string;
   };
 
