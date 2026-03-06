@@ -38,6 +38,9 @@ async def _stream_completion(
 	)
 	ai_message = await MessageRepository.create(db, ai_message_in)
 
+	# 通知客户端 AI 消息已创建
+	yield f"event: start\ndata: {json.dumps({'message_id': str(ai_message.id)}, ensure_ascii=False)}\n\n"
+
 	# 注册流并获取取消事件
 	cancel_event = stream_manager.register(conversation_id)
 
